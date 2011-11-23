@@ -1,0 +1,39 @@
+#!/system/bin/sh
+
+sysctl -p /etc/sysctl.conf;
+
+LOOP=`ls -d /sys/block/loop*`;
+blk0=`ls -d /sys/block/mmcblk0`;
+blk1=`ls -d /sys/block/mmcblk1`;
+MMC=`ls -d /sys/block/mmc*`;
+
+for j in $MMC; do
+	echo "0" > $j/queue/rotational;
+	echo "4096" > $j/queue/read_ahead_kb;
+	echo "0" > $j/queue/iostats;
+	echo "1" > $j/queue/iosched/group_isolation;
+	echo "4" > $j/queue/iosched/quantum;
+	echo "1" > $j/queue/iosched/low_latency;
+	echo "5" > $j/queue/iosched/slice_idle;
+	echo "1" > $j/queue/iosched/back_seek_penalty;
+	echo "1000000000" > $j/queue/iosched/back_seek_max;
+done;
+
+for k in $(busybox mount | grep relatime | cut -d " " -f3) ; do
+sync;
+busybox mount -o remount,noatime $k;
+done;
+
+for k in $(busybox mount | grep ext4 | cut -d " " -f3) ; do
+sync;
+busybox mount -o remount,commit=15 $k
+done;
+
+for i in /sys/block/*/queue/scheduler ; do
+echo "bfq" > $i;
+done;
+
+for a in $blk0 $blk1 $MMC ; do
+	echo "512" > $a/queue/nr_requests;
+done;
+

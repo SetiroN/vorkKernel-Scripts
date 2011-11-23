@@ -1,5 +1,3 @@
-#ifdef DEVICE_LGP990
-
 #define BOOT_PARTITION 		/dev/block/mmcblk0p5
 #define SYSTEM_PARTITION	/dev/block/mmcblk0p1
 #define DATA_PARTITION		/dev/block/mmcblk0p8
@@ -7,7 +5,12 @@
 #define SECONDARY_INIT		init.p990.rc
 
 #define BOOT_PAGESIZE 		0x800
-#define BOOT_CMDLINE 		"mem=383M@0M nvmem=128M@384M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"
+
+//#define BOOT_CMDLINE 		"mem=415M@0M nvmem=96M@416M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1
+//#define BOOT_CMDLINE 		"mem=479M@0M nvmem=32M@480M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1
+//#define BOOT_CMDLINE 		"mem=383M@0M nvmem=128M@384M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1
+
+#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"
 #define BOOT_BASE			0x10000000
 
 #define HAS_CM
@@ -18,53 +21,7 @@
 #define EXT4_RDY
 #define USES_BITRATE
 
-#endif // DEVICE_LGP990
-
-#ifdef DEVICE_XOOM
-
-#define BOOT_PARTITION		/dev/block/mmcblk1p7
-#define SYSTEM_PARTITION	/dev/block/mmcblk1p8
-#define DATA_PARTITION		/dev/block/mmcblk1p10
-
-#define SECONDARY_INIT		init.stingray.rc
-
-#define BOOT_PAGESIZE           0x800
-#define BOOT_CMDLINE		"$(cat $basedir/boot.old-cmdline)"
-#define BOOT_BASE		$(cat $basedir/boot.old-base)
-
-#define HAS_OTHER
-
-#endif // DEVICE_XOOM
-
-#ifdef DEVICE_DESIRE
-
-#define BOOT_PARTITION		/dev/mtd/mtd2
-#define SYSTEM_PARTITION	/dev/mtd/mtd3
-#define DATA_PARTITION		/dev/mtd/mtd5
-
-#define SECONDARY_INIT		init.bravo.rc
-
-#define BOOT_PAGESIZE		0x800
-#define BOOT_CMDLINE 		"$(cat $basedir/boot.old-cmdline)"
-#define BOOT_BASE		$(cat $basedir/boot.old-base)
-
-#define HAS_CM
-#define HAS_MIUI
-
-#define USES_BITRATE
-#define IS_PHONE
-
-#endif // DEVICE_DESIRE
-
-#ifdef DEVICE_LGP990
 device=LGP990
-#endif
-#ifdef DEVICE_XOOM
-device=XOOM
-#endif
-#ifdef DEVICE_DESIRE
-device=DESIRE
-#endif
 
 ui_print() {
     echo ui_print "$@" 1>&$UPDATE_CMD_PIPE;
@@ -119,8 +76,13 @@ log ""
 log "Kernel script started. Installing $UPDATE_FILE in $basedir"
 log ""
 ui_print ""
-ui_print "Installing $kernelver"
-ui_print "Developed by Benee and kiljacken"
+ui_print ""
+ui_print "** Installing ironkrnL  **"
+ui_print ""
+ui_print "Toolchain, scripts and OC/UV code"
+ui_print "provided by Benee and kiljacken"
+ui_print ""
+ui_print " compiled by SetiroN "
 ui_print ""
 #ifndef HAS_OTHER
 ui_print "Checking ROM..."
@@ -132,11 +94,6 @@ cymo=`cat /system/build.prop | $awk 'tolower($0) ~ /cyanogenmod/ { printf "1"; e
 #ifdef HAS_MIUI
 miui=`cat /system/build.prop | $awk 'tolower($0) ~ /miui/ { printf "1"; exit 0 }'`
 #endif // HAS_MIUI
-
-#ifdef DEVICE_DESIRE
-//Make sure we're not installing on a sense rom.
-sense=`cat /system/build.prop | $awk 'tolower($0) ~ /sense/ { printf "1"; exit 0 }'`
-#endif // DEVICE_DESIRE
 
 #ifdef DEVICE_LGP990
 epeen=`echo $kernelver | awk 'tolower($0) ~ /epeen/ { printf "1"; exit 0 }'`
@@ -164,12 +121,8 @@ if [ "$cymo" == "1" ]; then
     log "Installing on CyanogenMod"
 elif [ "$miui" == "1" ]; then
     log "Installing on Miui"
-#ifdef DEVICE_DESIRE
-elif [ "$sense" == "0" ]; then
-    log "No Sense rom detected. Continue with the installation..."
-#endif //DEVICE_DESIRE
 else
-    fatal "Current ROM is not compatible with vorkKernel! Aborting..."
+    fatal "Current ROM is not compatible with ironkrnL! Aborting..."
 fi
 
 ui_print ""
@@ -185,7 +138,6 @@ for pp in $args; do
 		flags="$flags -bitrate"
 	;;
 #endif // USES_BITRATE
-#ifdef DEVICE_LGP990
 	"ril405"|"ril502"|"ril606"|"ril622"|"ril725")
         	if [ "$ril" == "1" ]; then
                		fatal "ERROR: Only one RIL can be flashed!"
@@ -198,7 +150,6 @@ for pp in $args; do
 		int2ext=1;
 		flags="$flags -int2ext"
 	;;
-#endif // DEVICE_LGP990
         "silent")
             	silent=1
             	flags="$flags -silent"
@@ -227,20 +178,6 @@ for pp in $args; do
 		ringsettings=1
 	;;
 #endif
-#ifndef DEVICE_LGP990
-        "sstate"|"nosstate")
-		if [ "$pp" == "sstate" ]; then
-        		screenstate=2
-		else
-			screenstate=1
-		fi
-                flags="$flags -$pp"
-		if [ "$sstatesettings" == "1" ]; then
-		  fatal "ERROR: Only one option for screenstate can be selected!"
-		fi
-		sstatesettings=1
-        ;;
-#endif
         "script"|"noscript")
                 if [ "$pp" == "script" ]; then
 			script=2
@@ -253,13 +190,6 @@ for pp in $args; do
                 fi
                 scriptsettings=1
         ;;
-#ifdef DEVICE_DESIRE
-	"avs")
-		avs=1
-		flags="$flags -avs"
-		ui_print "WARNING! Your device may become unstable"
-	;;
-#endif
 	"debug")
 		debug=1
 	;;
@@ -286,12 +216,7 @@ ui_print "Packing kernel..."
 cd $basedir
 
 log "dumping previous kernel image to $basedir/boot.old"
-#ifdef DEVICE_DESIRE
-$chmod 777 $basedir/dump_image
-$basedir/dump_image boot $basedir/boot.old
-#else
 $BB dd if=BOOT_PARTITION of=$basedir/boot.old
-#endif //DEVICE_DESIRE
 if [ ! -f $basedir/boot.old ]; then
 	fatal "ERROR: Dumping old boot image failed"
 fi
@@ -318,10 +243,6 @@ fi
 log "Applying init.rc tweaks..."
 cp init.rc ../init.rc.org
 $awk -f $basedir/awk/initrc.awk ../init.rc.org > ../init.rc.mod
-#ifdef DEVICE_DESIRE
-cp init.bravo.rc ../init.bravo.org
-$awk -v avs=$avs -f $basedir/awk/initbravo.awk ../init.bravo.org > ../init.bravo.mod
-#endif //DEVICE_DESIRE
 
 
 FSIZE=`ls -l ../init.rc.mod | $awk '{ print $5 }'`
@@ -333,18 +254,6 @@ else
   ui_print "Applying init.rc tweaks failed! Continue without tweaks"
   warning=$((warning + 1))
 fi
-
-#ifdef DEVICE_DESIRE
-FSIZE=`ls -l ../init.bravo.mod | $awk '{ print $5 }'`
-log "init.bravo.mod filesize: $FSIZE"
-
-if [[ -s ../init.bravo.mod ]]; then
-  mv ../init.bravo.mod init.bravo.rc
-else
-  ui_print "Applying init.bravo.rc tweaks failed! Continue without tweaks"
-  warning=$((warning + 1))
-fi
-#endif //DEVICE_DESIRE
 
 #ifdef EXT4_RDY
 log "Applying "SECONDARY_INIT" tweaks..."
@@ -381,16 +290,6 @@ fi
 
 ui_print ""
 ui_print "Flashing the kernel..."
-#ifdef DEVICE_DESIRE
-$chmod 777 $basedir/flash_image
-$basedir/flash_image boot $basedir/boot.img
-#else
-$BB dd if=/dev/zero of=BOOT_PARTITION
-$BB dd if=$basedir/boot.img of=BOOT_PARTITION
-if [ "$?" -ne 0 ]; then
-    fatal "ERROR: Flashing kernel failed!"
-fi
-#endif //DEVICE_DESIRE
 
 ui_print ""
 ui_print "Installing kernel modules..."
@@ -398,93 +297,30 @@ rm -rf /system/lib/modules
 cp -r files/lib/modules /system/lib/
 if [ "$?" -ne 0 -o ! -d /system/lib/modules ]; then
     ui_print "WARNING: kernel modules not installed!"
-    warning=$((warning + 1))
+      warning=$((warning + 1))
 fi
 
-ui_print ""
-if [ -n "$flags" ]; then
-    ui_print "Installing additional mods..."
-fi
 
-$bb mount /data
-cp $basedir/files/90vktweak /system/etc/init.d/90vktweak
-if [ ! -f /data/local/vktweak.conf ]
-cp $basedir/files/vktweak.conf /data/local/vktweak.conf
-else
-ui_print "Applying tweaks to vktweak.conf"
-cp /data/local/vktweak.conf $basedir/vktweak.conf
-$awk -v ring=$ring -v screenstate=$screenstate -v script=$script -v density=$density -f $basedir/awk/vorkconf.awk $basedir/vktweak.conf > $basedir/vktweak.conf.mod
-cp -f $basedir/vktweak.conf.mod /data/local/vktweak.conf
-fi
-chmod 755 /system/etc/init.d/90vktweak
+ui_print "Installing additional mods..."
+$BB mount /data
+cp $basedir/files/10journalismoff /system/etc/init.d/10journalismoff
+cp $basedir/files/11mountoptions /system/etc/init.d/11mountoptions
+cp $basedir/files/12removelogger /system/etc/init.d/12removelogger
+cp $basedir/files/13dis_norm_sleeper /system/etc/init.d/13dis_norm_sleeper
+cp $basedir/files/70zipalign_defragdb /system/etc/init.d/70zipalign_defragdb
+cp $basedir/files/Clockopia.ttf /system/fonts/Clockopia.ttf
+cp $basedir/files/DroidSans-Bold.ttf /system/fonts/DroidSans-Bold.ttf
+cp $basedir/files/DroidSans.ttf /system/fonts/DroidSans.ttf
+cp $basedir/files/hosts /system/etc/hosts
+cp $basedir/files/gps.conf /system/etc/gps.conf
+cp $basedir/files/90irontweaks /system/etc/init.d/90irontweaks
 
-if [ "$silent" == "1" ]; then
-    mv /system/media/audio/ui/camera_click.ogg /system/media/audio/ui/camera_click.ogg.bak
-    mv /system/media/audio/ui/VideoRecord.ogg /system/media/audio/ui/VideoRecord.ogg.bak
-fi
-
-#ifdef USES_BITRATE
-#ifdef DEVICE_XOOM
-cp $basedir/files/media_profiles.xml /system/etc/media_profiles.xml
-#else
-cp /system/etc/media_profiles.xml $basedir/media_profiles.xml
-$awk -v bitrate=$bit -f $basedir/awk/mediaprofilesxml.awk $basedir/media_profiles.xml > $basedir/media_profiles.xml.mod
-
-FSIZE=`ls -l $basedir/media_profiles.xml.mod | $awk '{ print $5 }'`
-log ""
-log "media_profiles.xml.mod filesize: $FSIZE"
-log ""
-if [[ -s $basedir/media_profiles.xml.mod ]]; then
-  cp $basedir/media_profiles.xml.mod /system/etc/media_profiles.xml
-else
-  ui_print "WARNING: Tweaking media_profiles.xml failed! Continue without tweaks"
-  warning=$((warning + 1))
-fi
-#endif //DEVICE_XOOM
-#endif // USES_BITRATE
-
-cp /system/build.prop $basedir/build.prop
-#ifdef DEVICE_LGP990
-$awk -v ext2int=$ext2int -v int2ext=$int2ext -v density=$dvalue -v ring=$ring -f $basedir/awk/buildprop.awk $basedir/build.prop > $basedir/build.prop.mod
-#else
-$awk -v density=$dvalue -v ring=$ring -f $basedir/awk/buildprop.awk $basedir/build.prop > $basedir/build.prop.mod
-#endif // DEVICE_LGP990
-
-FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
-log ""
-log "build.prop.mod filesize: $FSIZE"
-log ""
-
-if [[ -s $basedir/build.prop.mod ]]; then
-  cp $basedir/build.prop.mod /system/build.prop
-else
-  ui_print "WARNING: Tweaking build.prop failed! Continue without tweaks"
-  warning=$((warning + 1))
-fi
-
-#ifdef DEVICE_LGP990
-cp /system/etc/vold.fstab $basedir/vold.fstab
-$awk -v int2ext=$int2ext -f $basedir/awk/voldfstab.awk $basedir/vold.fstab > $basedir/vold.fstab.mod
-
-FSIZE=`ls -l $basedir/vold.fstab.mod | $awk '{ print $5 }'`
-log ""
-log "vold.fstab.mod filesize: $FSIZE"
-log ""
-
-if [[ -s $basedir/vold.fstab.mod ]]; then
-  cp $basedir/vold.fstab.mod /system/etc/vold.fstab
-else
-  ui_print "WARNING: Tweaking vold.fstab failed! Continue without tweaks"
-  warning=$((warning + 1))
-fi
-#endif // DEVICE_LGP990
-
-#ifdef DEVICE_LGP990
-if [ "$ril" == "1" ]; then
-    rm /system/lib/lge-ril.so
-    cp $basedir/files/ril/$rildate/lge-ril.so /system/lib/lge-ril.so
-fi
-#endif // DEVICE_LGP990
+chmod 755 /system/etc/init.d/10journalismoff
+chmod 755 /system/etc/init.d/11mountoptions
+chmod 755 /system/etc/init.d/12removelogger
+chmod 755 /system/etc/init.d/13dis_norm_sleeper
+chmod 755 /system/etc/init.d/70zipalign_defragdb
+chmod 755 /system/etc/init.d/90irontweaks
 
 if [ "$debug" == "1" ]; then
     cp $basedir/files/80log /system/etc/init.d/80log
@@ -511,10 +347,6 @@ if [ "$ext4" == "1" ]; then
 fi
 #endif
 
-if [ -n "$flags" ]; then
-    ui_print ""
-fi
-
 if [ "$debug" == "1" ]; then
   rm -r /sdcard/vorkDebug
   mkdir /sdcard/vorkDebug
@@ -524,5 +356,7 @@ fi
 if [ $warning -gt 0 ]; then
     ui_print "$kernelver installed with $warning warnings."
 else
-    ui_print "$kernelver installed successfully. Enjoy"
+    ui_print "$kernelver installed successfully."
+    ui_print "   Enjoy!"
 fi
+
