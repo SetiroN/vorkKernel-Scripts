@@ -24,14 +24,12 @@ function LGP990_zip() {
 			cp $script_dir/mdfiles/unpackbootimg $script_dir/Awesome.zip/tmp/vorkKernel/
 			cp $script_dir/mdfiles/mkbootimg $script_dir/Awesome.zip/tmp/vorkKernel/
 			cp $script_dir/mdfiles/busybox $script_dir/Awesome.zip/tmp/vorkKernel/
-			cp -r $script_dir/mdfiles/ril $script_dir/Awesome.zip/tmp/vorkKernel/files
 		;;
 		"clean")
 			rm $script_dir/Awesome.zip/META-INF/com/google/android/update-binary
 			rm $script_dir/Awesome.zip/tmp/vorkKernel/unpackbootimg
 			rm $script_dir/Awesome.zip/tmp/vorkKernel/mkbootimg
 			rm $script_dir/Awesome.zip/tmp/vorkKernel/busybox
-			rm -r $script_dir/Awesome.zip/tmp/vorkKernel/files/ril
 		;;
 	esac
 }
