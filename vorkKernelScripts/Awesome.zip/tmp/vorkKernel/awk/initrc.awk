@@ -6,9 +6,5 @@
 /scaling_governor/ { next; }
 /sampling_rate/ { next; }
 
-# Tweak some VM stuff to, hopefully, increase battery life
-/dirty_expire_centisecs/ { sub(/200/, "1000"); print; next; }
-/dirty_writeback_centisecs/ { sub(/5/, "2000"); print; next; }
-
 # keep rest of file as is:
 { print; }

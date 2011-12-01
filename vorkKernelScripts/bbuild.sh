@@ -14,7 +14,7 @@ function die () { echo $@; exit 1; }
 devices="LGP990 XOOM DESIRE"
 
 # Device specific functions
-function LGP990() { toolchain="$HOME/vorkChain/toolchain/bin/arm-eabi-"; ramhack32=1; ramhack96=1; ramhack0=1; }
+function LGP990() { toolchain="$HOME/vorkChain/toolchain/bin/arm-eabi-"; ramhack96=1; ramhack80=0; ramhack48=0; ramhack32=1; ramhack0=1; }
 function XOOM() { toolchain="$HOME/vorkChain/toolchain/bin/arm-eabi-"; epeen=0; }
 function DESIRE() { toolchain="$HOME/vorkChain/msmqsd/toolchain/bin/arm-eabi-"; epeen=0; }
 function LGP990_zip() {
@@ -74,19 +74,6 @@ function DESIRE_zip() {
 	esac
 }
 
-function LGP990_ramhack32() {
-	case $1 in
-		"do")   
-			sed -i 's/#define RAMHACK64/#define RAMHACK32/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
-			sed -i 's/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=415M@0M nvmem=96M@416M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
-		;;
-		"clean")
-			sed -i 's/#define RAMHACK32/#define RAMHACK64/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
-			sed -i 's/#define BOOT_CMDLINE 		"mem=415M@0M nvmem=96M@416M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
-		;;
-	esac
-}
-
 function LGP990_ramhack96() {
 	case $1 in
 		"do")   
@@ -96,6 +83,45 @@ function LGP990_ramhack96() {
 		"clean")
 			sed -i 's/#define RAMHACK96/#define RAMHACK64/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
 			sed -i 's/#define BOOT_CMDLINE 		"mem=479M@0M nvmem=32M@480M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
+		;;
+	esac
+}
+
+function LGP990_ramhack80() {
+	case $1 in
+		"do")   
+			sed -i 's/#define RAMHACK64/#define RAMHACK80/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
+			sed -i 's/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=463M@0M nvmem=48M@464M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
+		;;
+		"clean")
+			sed -i 's/#define RAMHACK80/#define RAMHACK64/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
+			sed -i 's/#define BOOT_CMDLINE 		"mem=463M@0M nvmem=48M@464M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
+		;;
+	esac
+}
+
+function LGP990_ramhack48() {
+	case $1 in
+		"do")   
+			sed -i 's/#define RAMHACK64/#define RAMHACK48/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
+			sed -i 's/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=431M@0M nvmem=80M@432M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
+		;;
+		"clean")
+			sed -i 's/#define RAMHACK48/#define RAMHACK64/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
+			sed -i 's/#define BOOT_CMDLINE 		"mem=431M@0M nvmem=80M@432M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
+		;;
+	esac
+}
+
+function LGP990_ramhack32() {
+	case $1 in
+		"do")   
+			sed -i 's/#define RAMHACK64/#define RAMHACK32/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
+			sed -i 's/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=415M@0M nvmem=96M@416M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
+		;;
+		"clean")
+			sed -i 's/#define RAMHACK32/#define RAMHACK64/g' $source_dir/lge-kernel-star/include/linux/vorkKernel.h
+			sed -i 's/#define BOOT_CMDLINE 		"mem=415M@0M nvmem=96M@416M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/#define BOOT_CMDLINE 		"mem=447M@0M nvmem=64M@448M loglevel=0 muic_state=1 lpj=9994240 CRC=3010002a8e458d7 vmalloc=256M brdrev=1.0 video=tegrafb console=ttyS0,115200n8 usbcore.old_scheme_first=1 tegraboot=sdmmc tegrapart=recovery:35e00:2800:800,linux:34700:1000:800,mbr:400:200:800,system:600:2bc00:800,cache:2c200:8000:800,misc:34200:400:800,userdata:38700:c0000:800 androidboot.hardware=p990"/g' $script_dir/mdfiles/installkernel.pre.sh
 		;;
 	esac
 }
@@ -160,22 +186,34 @@ fi
 
 if [ "$release" == "release" ]; then
 	zip_location=$storage_dir/ironkrnL/RELEASE/ironkrnL64-$now.zip
-	if [ "$ramhack32" == "1" ]; then
-		ramhack32_zip_location=$storage_dir/ironkrnL/RELEASE/ironkrnL32-$now.zip
-	fi
 	if [ "$ramhack96" == "1" ]; then
 		ramhack96_zip_location=$storage_dir/ironkrnL/RELEASE/ironkrnL96-$now.zip
+	fi
+	if [ "$ramhack80" == "1" ]; then
+		ramhack80_zip_location=$storage_dir/ironkrnL/RELEASE/ironkrnL80-$now.zip
+	fi
+	if [ "$ramhack48" == "1" ]; then
+		ramhack48_zip_location=$storage_dir/ironkrnL/RELEASE/ironkrnL48-$now.zip
+	fi
+	if [ "$ramhack32" == "1" ]; then
+		ramhack32_zip_location=$storage_dir/ironkrnL/RELEASE/ironkrnL32-$now.zip
 	fi
 	if [ "$ramhack0" == "1" ]; then
 		ramhack0_zip_location=$storage_dir/ironkrnL/RELEASE/ironkrnL00-$now.zip
 	fi
 elif [ "$release" == "test" ]; then
 	zip_location=$storage_dir/ironkrnL/TEST/ironkrnL64-$now.zip
-	if [ "$ramhack32" == "1" ]; then
-		ramhack32_zip_location=$storage_dir/ironkrnL/TEST/ironkrnL32-$now.zip
-	fi
 	if [ "$ramhack96" == "1" ]; then
 		ramhack96_zip_location=$storage_dir/ironkrnL/TEST/ironkrnL96-$now.zip
+	fi
+	if [ "$ramhack80" == "1" ]; then
+		ramhack80_zip_location=$storage_dir/ironkrnL/TEST/ironkrnL80-$now.zip
+	fi
+	if [ "$ramhack48" == "1" ]; then
+		ramhack48_zip_location=$storage_dir/ironkrnL/TEST/ironkrnL48-$now.zip
+	fi
+	if [ "$ramhack32" == "1" ]; then
+		ramhack32_zip_location=$storage_dir/ironkrnL/TEST/ironkrnL32-$now.zip
 	fi
 	if [ "$ramhack0" == "1" ]; then
 		ramhack0_zip_location=$storage_dir/ironkrnL/TEST/ironkrnL00-$now.zip
@@ -220,6 +258,88 @@ cd $script_dir/Awesome.zip/
 zip -qr $zip_location *
 cd -
 "$build_device"_zip clean
+
+if [ "$ramhack80" == "1" ]; then
+	"$build_device"_ramhack80 do
+	echo "Setting up kernel..."
+	rm ~/lge-kernel-star/arch/arm/mach-tegra/board-nvodm.o
+	rm ~/lge-kernel-star/arch/arm/mach-tegra/odm_kit/star/query/nvodm_query.o
+	make -C $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" setiron_defconfig
+	if [ "$?" != "0" ]; then
+		die "Error setting up kernel"
+	fi
+
+	echo "Building kernel..."
+	make -C $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" -j$cores
+	if [ "$?" != "0" ]; then
+		die "Error building kernel"
+	fi
+
+	echo "Grabbing zImage..."
+	cp $source_dir/lge-kernel-star/arch/arm/boot/zImage $script_dir/Awesome.zip/tmp/vorkKernel/zImage
+
+	echo "Grabbing kernel modules..."
+    if [ ! -d $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/ ]; then
+        mkdir -p $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/
+    fi
+    rm $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/*
+
+	for module in `find $source_dir/lge-kernel-star -name *.ko`
+	do
+		cp $module $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/
+	done
+	
+	echo "Making update zip..."
+	echo "#!/sbin/sh" > $script_dir/Awesome.zip/tmp/vorkKernel/installkernel.sh
+	cpp -D DEVICE_$build_device $script_dir/mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $script_dir/Awesome.zip/tmp/vorkKernel/installkernel.sh
+	"$build_device"_zip do
+	cd $script_dir/Awesome.zip/
+	zip -qr $ramhack80_zip_location *
+	cd -
+	"$build_device"_zip clean
+	"$build_device"_ramhack80 clean
+fi
+
+if [ "$ramhack48" == "1" ]; then
+	"$build_device"_ramhack48 do
+	echo "Setting up kernel..."
+	rm ~/lge-kernel-star/arch/arm/mach-tegra/board-nvodm.o
+	rm ~/lge-kernel-star/arch/arm/mach-tegra/odm_kit/star/query/nvodm_query.o
+	make -C $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" setiron_defconfig
+	if [ "$?" != "0" ]; then
+		die "Error setting up kernel"
+	fi
+
+	echo "Building kernel..."
+	make -C $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" -j$cores
+	if [ "$?" != "0" ]; then
+		die "Error building kernel"
+	fi
+
+	echo "Grabbing zImage..."
+	cp $source_dir/lge-kernel-star/arch/arm/boot/zImage $script_dir/Awesome.zip/tmp/vorkKernel/zImage
+
+	echo "Grabbing kernel modules..."
+    if [ ! -d $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/ ]; then
+        mkdir -p $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/
+    fi
+    rm $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/*
+
+	for module in `find $source_dir/lge-kernel-star -name *.ko`
+	do
+		cp $module $script_dir/Awesome.zip/tmp/vorkKernel/files/lib/modules/
+	done
+	
+	echo "Making update zip..."
+	echo "#!/sbin/sh" > $script_dir/Awesome.zip/tmp/vorkKernel/installkernel.sh
+	cpp -D DEVICE_$build_device $script_dir/mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $script_dir/Awesome.zip/tmp/vorkKernel/installkernel.sh
+	"$build_device"_zip do
+	cd $script_dir/Awesome.zip/
+	zip -qr $ramhack48_zip_location *
+	cd -
+	"$build_device"_zip clean
+	"$build_device"_ramhack48 clean
+fi
 
 if [ "$ramhack32" == "1" ]; then
 	"$build_device"_ramhack32 do

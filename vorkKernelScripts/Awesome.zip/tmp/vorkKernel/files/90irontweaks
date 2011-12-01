@@ -3,6 +3,7 @@
 #
 # build.prop
 #
+setprop ro.sf.lcd_density 200;
 setprop wifi.supplicant_scan_interval 600;
 setprop windowsmgr.max_events_per_sec 60;
 setprop ro.telephony.call.ring.delay 400;
