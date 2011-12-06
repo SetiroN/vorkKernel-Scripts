@@ -24,6 +24,10 @@ sync;
 busybox mount -o remount,noatime $k;
 done;
 
+busybox mount -o remount,noauto_da_alloc /system /system
+busybox mount -o remount,noauto_da_alloc /data /data
+busybox mount -o remount,noauto_da_alloc /cache /cache
+
 for k in $(busybox mount | grep ext4 | cut -d " " -f3) ; do
 sync;
 busybox mount -o remount,commit=15 $k
@@ -32,6 +36,22 @@ done;
 for i in /sys/block/*/queue/scheduler ; do
 echo "bfq" > $i;
 done;
+
+if [ ! -f /sys/block/mmcblk0/queue/read_ahead_kb]
+then
+sleep 60
+fi
+echo "2048" > /sys/block/mmcblk0/queue/read_ahead_kb
+if [ ! -f /sys/block/mmcblk1/queue/read_ahead_kb]
+then
+sleep 60
+fi
+echo "2048" > /sys/block/mmcblk1/queue/read_ahead_kb
+if [ ! -f /sys/devices/virtual/bdi/179:0/read_ahead_kb]
+then
+sleep 60
+fi
+echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb
 
 for a in $blk0 $blk1 $MMC ; do
 	echo "512" > $a/queue/nr_requests;

@@ -320,6 +320,7 @@ rm /system/etc/init.d/99ramtweak
 rm /system/etc/init.d/98KickassKernelTweaks
 rm /system/etc/init.d/99supercharger
 ui_print "Installing additional mods..."
+cp $basedir/files/07setprops /system/etc/init.d/07setprops
 cp $basedir/files/10journalismoff /system/etc/init.d/10journalismoff
 cp $basedir/files/11mountoptions /system/etc/init.d/11mountoptions
 cp $basedir/files/12removelogger /system/etc/init.d/12removelogger
@@ -329,16 +330,17 @@ cp $basedir/files/DroidSans-Bold.ttf /system/fonts/DroidSans-Bold.ttf
 cp $basedir/files/DroidSans.ttf /system/fonts/DroidSans.ttf
 cp $basedir/files/hosts /system/etc/hosts
 cp $basedir/files/gps.conf /system/etc/gps.conf
-cp $basedir/files/70zipalign_defragdb /system/etc/init.d/70zipalign_defragdb
-cp $basedir/files/97loopy_smoothness_tweak /system/etc/init.d/97loopy_smoothness_tweak
 cp $basedir/files/90irontweaks /system/etc/init.d/90irontweaks
+cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
+cp $basedir/files/97loopy_smoothness_tweak /system/etc/init.d/97loopy_smoothness_tweak
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
 
+chmod 755 /system/etc/init.d/07setprops
 chmod 755 /system/etc/init.d/10journalismoff
 chmod 755 /system/etc/init.d/11mountoptions
 chmod 755 /system/etc/init.d/12removelogger
 chmod 755 /system/etc/init.d/13dis_norm_sleeper
-chmod 755 /data/local/70zipalign_defragdb
+chmod 755 /system/etc/init.d/95zipalign_defragdb
 chmod 755 /system/etc/init.d/90irontweaks
 chmod 755 /system/etc/init.d/97loopy_smoothness_tweak
 chmod 755 /data/local/bootanimation.zip
