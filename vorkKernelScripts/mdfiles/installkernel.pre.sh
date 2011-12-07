@@ -139,7 +139,7 @@ miui=`cat /system/build.prop | $awk 'tolower($0) ~ /miui/ { printf "1"; exit 0 }
 #endif // HAS_MIUI
 
 #ifdef DEVICE_DESIRE
-//Make sure we're not installing on a sense rom.
+//Make sure we are not installing on a sense rom.
 sense=`cat /system/build.prop | $awk 'tolower($0) ~ /sense/ { printf "1"; exit 0 }'`
 #endif // DEVICE_DESIRE
 
@@ -151,9 +151,9 @@ if [ "$epeen" == "1" ]; then
     ui_print ""
     ui_print ""
     ui_print "  WARNING!"
-    ui_print "    You're installing E-Peen mode for LGP990."
+    ui_print "    You are installing E-Peen mode for LGP990."
     ui_print "    You now live on the bleeding edge."
-    ui_print "    Don't blame me if the phone will turn "
+    ui_print "    Do not blame me if the phone will turn "
     ui_print "    into lava! "
     ui_print ""
     ui_print "    Thanks"
@@ -301,26 +301,27 @@ fi
 
 $BB mount /data
 ui_print ""
-ui_print "Attempt to remove interferences..."
-rm /system/etc/init.d/11ext4journalismoff
-rm /system/etc/init.d/12perfectmountoptions
-rm /system/etc/init.d/12removelogger
-rm /system/etc/init.d/13disablenormalizedsleep
-rm /system/etc/init.d/15fuckthelogger
-rm /system/etc/init.d/16wehatenormalizedsleep
-rm /system/etc/init.d/70zipalign
-rm /system/etc/init.d/70zipalign_defragdb
-rm /system/etc/init.d/80log
-rm /system/etc/init.d/90vktweak
-rm /system/etc/init.d/S_volt_scheduler
-rm /system/etc/init.d/S_ramtweak
-rm /system/etc/init.d/97ramtweak
-rm /system/etc/init.d/98ramtweak
-rm /system/etc/init.d/99ramtweak
-rm /system/etc/init.d/98KickassKernelTweaks
-rm /system/etc/init.d/99supercharger
+ui_print "Cleaning up interferences..."
+$BB rm /system/etc/init.d/11ext4journalismoff
+$BB rm /system/etc/init.d/12perfectmountoptions
+$BB rm /system/etc/init.d/12removelogger
+$BB rm /system/etc/init.d/13disablenormalizedsleep
+$BB rm /system/etc/init.d/15fuckthelogger
+$BB rm /system/etc/init.d/16wehatenormalizedsleep
+$BB rm /system/etc/init.d/70zipalign
+$BB rm /system/etc/init.d/70zipalign_defragdb
+$BB rm /system/etc/init.d/80log
+$BB rm /system/etc/init.d/90vktweak
+$BB rm /system/etc/init.d/S_volt_scheduler
+$BB rm /system/etc/init.d/S_ramtweak
+$BB rm /system/etc/init.d/97ramtweak
+$BB rm /system/etc/init.d/98ramtweak
+$BB rm /system/etc/init.d/99ramtweak
+$BB rm /system/etc/init.d/98KickassKernelTweaks
+$BB rm /system/etc/init.d/99supercharger
+$BB rm /system/lib/libsqlite.so
 ui_print "Installing additional mods..."
-cp $basedir/files/07setprops /system/etc/init.d/07setprops
+cp $basedir/files/libsqlite.so /system/lib/libsqlite.so
 cp $basedir/files/10journalismoff /system/etc/init.d/10journalismoff
 cp $basedir/files/11mountoptions /system/etc/init.d/11mountoptions
 cp $basedir/files/12removelogger /system/etc/init.d/12removelogger
@@ -332,17 +333,14 @@ cp $basedir/files/hosts /system/etc/hosts
 cp $basedir/files/gps.conf /system/etc/gps.conf
 cp $basedir/files/90irontweaks /system/etc/init.d/90irontweaks
 cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
-cp $basedir/files/97loopy_smoothness_tweak /system/etc/init.d/97loopy_smoothness_tweak
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
 
-chmod 755 /system/etc/init.d/07setprops
 chmod 755 /system/etc/init.d/10journalismoff
 chmod 755 /system/etc/init.d/11mountoptions
 chmod 755 /system/etc/init.d/12removelogger
 chmod 755 /system/etc/init.d/13dis_norm_sleeper
 chmod 755 /system/etc/init.d/95zipalign_defragdb
 chmod 755 /system/etc/init.d/90irontweaks
-chmod 755 /system/etc/init.d/97loopy_smoothness_tweak
 chmod 755 /data/local/bootanimation.zip
 
 if [ "$silent" == "1" ]; then
@@ -370,12 +368,43 @@ fi
 #endif //DEVICE_XOOM
 #endif // USES_BITRATE
 
+  ui_print ""
 cp /system/build.prop $basedir/build.prop
+  ui_print "Saving build.prop copies..."
+cp /system/build.prop /sdcard/build.prop.bak
+cp /system/build.prop /system/build.prop.bak
+$awk '/^wifi.supplicant_scan_interval/ {print "wifi.supplicant_scan_interval=320"; found=1} !/^wifi.supplicant_scan_interval/ {print $0} END {if (!found) {print "wifi.supplicant_scan_interval=320" }}' $basedir/build.prop > $basedir/build.prop.mod0
+$awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=150"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=150" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
+$awk '/^ro.telephony.call_ring.delay/ {print "ro.telephony.call_ring.delay=400"; found=1} !/^ro.telephony.call_ring.delay/ {print $0} END {if (!found) {print "ro.telephony.call_ring.delay=400" }}' $basedir/build.prop.mod1 > $basedir/build.prop.mod2
+$awk '/^dalvik.vm.heapsize/ {print "dalvik.vm.heapsize=48m"; found=1} !/^dalvik.vm.heapsize/ {print $0} END {if (!found) {print "dalvik.vm.heapsize=48m" }}' $basedir/build.prop.mod2 > $basedir/build.prop.mod3
+$awk '/^ro.lg.proximity.delay/ {print "ro.lg.proximity.delay=25"; found=1} !/^ro.lg.proximity.delay/ {print $0} END {if (!found) {print "ro.lg.proximity.delay=25" }}' $basedir/build.prop.mod3 > $basedir/build.prop.mod4
+$awk '/^persist.sys.use_dithering/ {print "persist.sys.use_dithering=0"; found=1} !/^persist.sys.use_dithering/ {print $0} END {if (!found) {print "persist.sys.use_dithering=0" }}' $basedir/build.prop.mod4 > $basedir/build.prop.mod5
+$awk '/^persist.sys.purgeable_assets/ {print "persist.sys.purgeable_assets=1"; found=1} !/^persist.sys.purgeable_assets/ {print $0} END {if (!found) {print "persist.sys.purgeable_assets=1" }}' $basedir/build.prop.mod5 > $basedir/build.prop.mod6
+$awk '/^ro.wifi.channels/ {print "ro.wifi.channels=14"; found=1} !/^ro.wifi.channels/ {print $0} END {if (!found) {print "ro.wifi.channels=14" }}' $basedir/build.prop.mod6 > $basedir/build.prop.mod7
+$awk '/^debug.sf.hw/ {print "debug.sf.hw=1"; found=1} !/^debug.sf.hw/ {print $0} END {if (!found) {print "debug.sf.hw=1" }}' $basedir/build.prop.mod7 > $basedir/build.prop.mod8
+$awk '/^debug.performance.tuning/ {print "debug.performance.tuning=1"; found=1} !/^debug.performance.tuning/ {print $0} END {if (!found) {print "debug.performance.tuning=1" }}' $basedir/build.prop.mod8 > $basedir/build.prop.mod9
+$awk '/^video.accelerate.hw/ {print "video.accelerate.hw=1"; found=1} !/^video.accelerate.hw/ {print $0} END {if (!found) {print "video.accelerate.hw=1" }}' $basedir/build.prop.mod9 > $basedir/build.prop.mod10
+$awk '/^ro.config.hwfeature_wakeupkey/ {print "ro.config.hwfeature_wakeupkey=0"; found=1} !/^ro.config.hwfeature_wakeupkey/ {print $0} END {if (!found) {print "ro.config.hwfeature_wakeupkey=0" }}' $basedir/build.prop.mod10 > $basedir/build.prop.mod11
+$awk '/^net.tcp.buffersize.default/ {print "net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.default/ {print $0} END {if (!found) {print "net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod11 > $basedir/build.prop.mod12
+$awk '/^net.tcp.buffersize.wifi/ {print "net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.wifi/ {print $0} END {if (!found) {print "net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod12 > $basedir/build.prop.mod13
+$awk '/^net.tcp.buffersize.umts/ {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.umts/ {print $0} END {if (!found) {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod13 > $basedir/build.prop.mod14
+$awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod14 > $basedir/build.prop.mod15
+$awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod15 > $basedir/build.prop.mod16
+$awk '/^ro.setupwizard.mode=DISABLED/ {print "ro.setupwizard.mode=DISABLED=DISABLED"; found=1} !/^ro.setupwizard.mode=DISABLED/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED=DISABLED" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
 log ""
 log "build.prop.mod filesize: $FSIZE"
 log ""
+
+if [[ -s $basedir/build.prop.mod ]]; then
+  cp $basedir/build.prop.mod /system/build.prop
+  ui_print "Applying build.prop tweaks..."
+else
+  ui_print "WARNING: Tweaking build.prop failed! Continue without tweaks"
+  warning=$((warning + 1))
+fi
+  $BB rm $basedir/build.prop.mod*
 
 #ifdef DEVICE_LGP990
 cp /system/etc/vold.fstab $basedir/vold.fstab
@@ -437,10 +466,6 @@ if [ "$debug" == "1" ]; then
 fi
 
 ui_print ""
-ui_print ""
-ui_print ""
-ui_print ""
-
 if [ $warning -gt 0 ]; then
     ui_print "$kernelver installed with $warning warnings."
 else
