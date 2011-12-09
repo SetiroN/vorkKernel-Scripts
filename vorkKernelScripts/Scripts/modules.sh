@@ -2,7 +2,7 @@
 
 cd $SOURCE_DIR
 
-make ARCH=arm CROSS_COMPILE="$ARM_EABI" INSTALL_MOD_PATH=$VORKSCRIPT_DIR/Awesome.zip/tmp/vorkKernel/files modules_install
+make ARCH=arm CROSS_COMPILE="$ARM_EABI" INSTALL_MOD_PATH=$VORKSCRIPT_DIR/Awesome.zip/tmp/ironkrnL/files modules_install
 
 
 # still build a old update.zip (kernel manager)
@@ -13,11 +13,11 @@ fi
 
 
 
-for module in `find $VORKSCRIPT_DIR/Awesome.zip/tmp/vorkKernel/files/lib/modules/$VERSION/kernel/ -name *.ko`
+for module in `find $VORKSCRIPT_DIR/Awesome.zip/tmp/ironkrnL/files/lib/modules/$VERSION/kernel/ -name *.ko`
 do
-    cp $module $VORKSCRIPT_DIR/Awesome.zip/tmp/vorkKernel/files/lib/modules/
+    cp $module $VORKSCRIPT_DIR/Awesome.zip/tmp/ironkrnL/files/lib/modules/
 done
-rm -r $VORKSCRIPT_DIR/Awesome.zip/tmp/vorkKernel/files/lib/modules/$VERSION
+rm -r $VORKSCRIPT_DIR/Awesome.zip/tmp/ironkrnL/files/lib/modules/$VERSION
 
 
 # still build a old update.zip (kernel manager)

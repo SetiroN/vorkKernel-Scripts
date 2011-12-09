@@ -1,11 +1,11 @@
 ui_print("Extracting files...");
 set_progress(1.000000);
-delete_recursive("/tmp/vorkKernel");
+delete_recursive("/tmp/ironkrnL/");
 package_extract_dir("tmp", "/tmp");
 run_program("/sbin/busybox", "mount", "/system");
-set_perm(0, 0, 0700, "/tmp/vorkKernel/mkbootimg");
-set_perm(0, 0, 0700, "/tmp/vorkKernel/busybox");
-set_perm(0, 0, 0700, "/tmp/vorkKernel/unpackbootimg");
-set_perm(0, 0, 0700, "/tmp/vorkKernel/installkernel.sh");
-run_program("/tmp/vorkKernel/installkernel.sh");
+set_perm(0, 0, 0700, "/tmp/ironkrnL//mkbootimg");
+set_perm(0, 0, 0700, "/tmp/ironkrnL//busybox");
+set_perm(0, 0, 0700, "/tmp/ironkrnL//unpackbootimg");
+set_perm(0, 0, 0700, "/tmp/ironkrnL//installkernel.sh");
+run_program("/tmp/ironkrnL//installkernel.sh");
 unmount("/system");

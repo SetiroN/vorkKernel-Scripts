@@ -1,8 +1,7 @@
-#ifdef DEVICE_LGP990
-
 #define BOOT_PARTITION 		/dev/block/mmcblk0p5
 #define SYSTEM_PARTITION	/dev/block/mmcblk0p1
 #define DATA_PARTITION		/dev/block/mmcblk0p8
+#define CACHE_PARTITION		/dev/block/mmcblk1p2
 
 #define SECONDARY_INIT		init.p990.rc
 
@@ -16,55 +15,8 @@
 #define IS_PHONE
 
 #define EXT4_RDY
-#define USES_BITRATE
 
-#endif // DEVICE_LGP990
-
-#ifdef DEVICE_XOOM
-
-#define BOOT_PARTITION		/dev/block/mmcblk1p7
-#define SYSTEM_PARTITION	/dev/block/mmcblk1p8
-#define DATA_PARTITION		/dev/block/mmcblk1p10
-
-#define SECONDARY_INIT		init.stingray.rc
-
-#define BOOT_PAGESIZE           0x800
-#define BOOT_CMDLINE		"$(cat $basedir/boot.old-cmdline)"
-#define BOOT_BASE		$(cat $basedir/boot.old-base)
-
-#define HAS_OTHER
-
-#endif // DEVICE_XOOM
-
-#ifdef DEVICE_DESIRE
-
-#define BOOT_PARTITION		/dev/mtd/mtd2
-#define SYSTEM_PARTITION	/dev/mtd/mtd3
-#define DATA_PARTITION		/dev/mtd/mtd5
-
-#define SECONDARY_INIT		init.bravo.rc
-
-#define BOOT_PAGESIZE		0x800
-#define BOOT_CMDLINE 		"$(cat $basedir/boot.old-cmdline)"
-#define BOOT_BASE		$(cat $basedir/boot.old-base)
-
-#define HAS_CM
-#define HAS_MIUI
-
-#define USES_BITRATE
-#define IS_PHONE
-
-#endif // DEVICE_DESIRE
-
-#ifdef DEVICE_LGP990
 device=LGP990
-#endif
-#ifdef DEVICE_XOOM
-device=XOOM
-#endif
-#ifdef DEVICE_DESIRE
-device=DESIRE
-#endif
 
 ui_print() {
     echo ui_print "$@" 1>&$UPDATE_CMD_PIPE;
@@ -84,32 +36,20 @@ cpio="$BB cpio"
 find="$BB find"
 gzip="$BB gzip"
 warning=0
-#ifdef DEVICE_LGP990
 ril=0
-#endif
-#ifdef USES_BITRATE
 bit=0
-#endif
 density=0
 ringsettings=0
 sstatesettings=0
 scriptsettings=0
-#ifdef DEVICE_LGP990
 screenstate=1
-#else
-screenstate=0
-#endif
 script=0
-#ifdef IS_PHONE
 ring=0
-#endif
 #ifdef EXT4_RDY
 extrdy=1
 #endif
-#ifdef DEVICE_LGP990
 int2ext=0
 ext4=1
-#endif
 
 updatename=`echo $UPDATE_FILE | $awk '{ sub(/^.*\//,"",$0); sub(/.zip$/,"",$0); print }'`
 kernelver=`echo $updatename | $awk 'BEGIN {RS="-"; ORS="-"}; NR<=2 {print; ORS=""}'`
@@ -138,40 +78,12 @@ cymo=`cat /system/build.prop | $awk 'tolower($0) ~ /cyanogenmod/ { printf "1"; e
 miui=`cat /system/build.prop | $awk 'tolower($0) ~ /miui/ { printf "1"; exit 0 }'`
 #endif // HAS_MIUI
 
-#ifdef DEVICE_DESIRE
-//Make sure we are not installing on a sense rom.
-sense=`cat /system/build.prop | $awk 'tolower($0) ~ /sense/ { printf "1"; exit 0 }'`
-#endif // DEVICE_DESIRE
-
-#ifdef DEVICE_LGP990
 epeen=`echo $kernelver | awk 'tolower($0) ~ /epeen/ { printf "1"; exit 0 }'`
-
-if [ "$epeen" == "1" ]; then
-    ui_print ""
-    ui_print ""
-    ui_print ""
-    ui_print "  WARNING!"
-    ui_print "    You are installing E-Peen mode for LGP990."
-    ui_print "    You now live on the bleeding edge."
-    ui_print "    Do not blame me if the phone will turn "
-    ui_print "    into lava! "
-    ui_print ""
-    ui_print "    Thanks"
-    ui_print ""
-    ui_print ""
-    ui_print ""
-    $BB sleep 5s
-fi
-#endif //DEVICE_LGP990
 
 if [ "$cymo" == "1" ]; then
     log "Installing on CyanogenMod"
 elif [ "$miui" == "1" ]; then
     log "Installing on Miui"
-#ifdef DEVICE_DESIRE
-elif [ "$sense" == "0" ]; then
-    log "No Sense rom detected. Continue with the installation..."
-#endif //DEVICE_DESIRE
 else
     fatal "Current ROM is not compatible with ironkrnL! Aborting..."
 fi
@@ -184,12 +96,7 @@ ui_print "Packing kernel..."
 cd $basedir
 
 log "dumping previous kernel image to $basedir/boot.old"
-#ifdef DEVICE_DESIRE
-$chmod 777 $basedir/dump_image
-$basedir/dump_image boot $basedir/boot.old
-#else
 $BB dd if=BOOT_PARTITION of=$basedir/boot.old
-#endif //DEVICE_DESIRE
 if [ ! -f $basedir/boot.old ]; then
 	fatal "ERROR: Dumping old boot image failed"
 fi
@@ -216,11 +123,6 @@ fi
 log "Applying init.rc tweaks..."
 cp init.rc ../init.rc.org
 $awk -f $basedir/awk/initrc.awk ../init.rc.org > ../init.rc.mod
-#ifdef DEVICE_DESIRE
-cp init.bravo.rc ../init.bravo.org
-$awk -v avs=$avs -f $basedir/awk/initbravo.awk ../init.bravo.org > ../init.bravo.mod
-#endif //DEVICE_DESIRE
-
 
 FSIZE=`ls -l ../init.rc.mod | $awk '{ print $5 }'`
 log "init.rc.mod filesize: $FSIZE"
@@ -231,18 +133,6 @@ else
   ui_print "Applying init.rc tweaks failed! Continue without tweaks"
   warning=$((warning + 1))
 fi
-
-#ifdef DEVICE_DESIRE
-FSIZE=`ls -l ../init.bravo.mod | $awk '{ print $5 }'`
-log "init.bravo.mod filesize: $FSIZE"
-
-if [[ -s ../init.bravo.mod ]]; then
-  mv ../init.bravo.mod init.bravo.rc
-else
-  ui_print "Applying init.bravo.rc tweaks failed! Continue without tweaks"
-  warning=$((warning + 1))
-fi
-#endif //DEVICE_DESIRE
 
 #ifdef EXT4_RDY
 log "Applying "SECONDARY_INIT" tweaks..."
@@ -279,16 +169,11 @@ fi
 
 ui_print ""
 ui_print "Flashing the kernel..."
-#ifdef DEVICE_DESIRE
-$chmod 777 $basedir/flash_image
-$basedir/flash_image boot $basedir/boot.img
-#else
 $BB dd if=/dev/zero of=BOOT_PARTITION
 $BB dd if=$basedir/boot.img of=BOOT_PARTITION
 if [ "$?" -ne 0 ]; then
     fatal "ERROR: Flashing kernel failed!"
 fi
-#endif //DEVICE_DESIRE
 
 ui_print ""
 ui_print "Installing kernel modules..."
@@ -302,30 +187,35 @@ fi
 $BB mount /data
 ui_print ""
 ui_print "Cleaning up interferences..."
-$BB rm /system/etc/init.d/11ext4journalismoff
-$BB rm /system/etc/init.d/12perfectmountoptions
-$BB rm /system/etc/init.d/12removelogger
-$BB rm /system/etc/init.d/13disablenormalizedsleep
-$BB rm /system/etc/init.d/15fuckthelogger
-$BB rm /system/etc/init.d/16wehatenormalizedsleep
-$BB rm /system/etc/init.d/70zipalign
-$BB rm /system/etc/init.d/70zipalign_defragdb
-$BB rm /system/etc/init.d/80log
-$BB rm /system/etc/init.d/90vktweak
-$BB rm /system/etc/init.d/S_volt_scheduler
-$BB rm /system/etc/init.d/S_ramtweak
-$BB rm /system/etc/init.d/97ramtweak
-$BB rm /system/etc/init.d/98ramtweak
-$BB rm /system/etc/init.d/99ramtweak
-$BB rm /system/etc/init.d/98KickassKernelTweaks
-$BB rm /system/etc/init.d/99supercharger
-$BB rm /system/lib/libsqlite.so
+$BB rm -rf /system/etc/init.d/10journalismoff
+$BB rm -rf /system/etc/init.d/11mountoptions
+$BB rm -rf /system/etc/init.d/11ext4journalismoff
+$BB rm -rf /system/etc/init.d/12perfectmountoptions
+$BB rm -rf /system/etc/init.d/12removelogger
+$BB rm -rf /system/etc/init.d/13disablenormalizedsleep
+$BB rm -rf /system/etc/init.d/13dis_norm_sleeper
+$BB rm -rf /system/etc/init.d/15fuckthelogger
+$BB rm -rf /system/etc/init.d/16wehatenormalizedsleep
+$BB rm -rf /system/etc/init.d/70zipalign
+$BB rm -rf /system/etc/init.d/70zipalign_defragdb
+$BB rm -rf /system/etc/init.d/80log
+$BB rm -rf /system/etc/init.d/90vktweak
+$BB rm -rf /system/etc/init.d/90irontweaks
+$BB rm -rf /system/etc/init.d/95zipalign_defragdb
+$BB rm -rf /system/etc/init.d/97ramtweak
+$BB rm -rf /system/etc/init.d/98ramtweak
+$BB rm -rf /system/etc/init.d/99ramtweak
+$BB rm -rf /system/etc/init.d/97loopy_smoothness_tweak
+$BB rm -rf /system/etc/init.d/S_loopy_smoothness_tweak
+$BB rm -rf /system/etc/init.d/98KickassKernelTweaks
+$BB rm -rf /system/etc/init.d/99supercharger
+$BB rm -rf /system/etc/init.d/S_volt_scheduler
+$BB rm -rf /system/etc/init.d/S_ramtweak
+$BB rm -rf /system/lib/libsqlite.so
 ui_print "Installing additional mods..."
 cp $basedir/files/libsqlite.so /system/lib/libsqlite.so
-cp $basedir/files/10journalismoff /system/etc/init.d/10journalismoff
 cp $basedir/files/11mountoptions /system/etc/init.d/11mountoptions
 cp $basedir/files/12removelogger /system/etc/init.d/12removelogger
-cp $basedir/files/13dis_norm_sleeper /system/etc/init.d/13dis_norm_sleeper
 cp $basedir/files/Clockopia.ttf /system/fonts/Clockopia.ttf
 cp $basedir/files/DroidSans-Bold.ttf /system/fonts/DroidSans-Bold.ttf
 cp $basedir/files/DroidSans.ttf /system/fonts/DroidSans.ttf
@@ -334,63 +224,25 @@ cp $basedir/files/gps.conf /system/etc/gps.conf
 cp $basedir/files/90irontweaks /system/etc/init.d/90irontweaks
 cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
+touch /system/etc/.root_browser
 
-chmod 755 /system/etc/init.d/10journalismoff
-chmod 755 /system/etc/init.d/11mountoptions
-chmod 755 /system/etc/init.d/12removelogger
-chmod 755 /system/etc/init.d/13dis_norm_sleeper
-chmod 755 /system/etc/init.d/95zipalign_defragdb
-chmod 755 /system/etc/init.d/90irontweaks
-chmod 755 /data/local/bootanimation.zip
+chmod 777 /system/etc/init.d/11mountoptions
+chmod 777 /system/etc/init.d/12removelogger
+chmod 777 /system/etc/init.d/90irontweaks
+chmod 777 /system/etc/init.d/95zipalign_defragdb
+chmod 777 /data/local/bootanimation.zip
 
 if [ "$silent" == "1" ]; then
     mv /system/media/audio/ui/camera_click.ogg /system/media/audio/ui/camera_click.ogg.bak
     mv /system/media/audio/ui/VideoRecord.ogg /system/media/audio/ui/VideoRecord.ogg.bak
 fi
 
-#ifdef USES_BITRATE
-#ifdef DEVICE_XOOM
-cp $basedir/files/media_profiles.xml /system/etc/media_profiles.xml
-#else
-cp /system/etc/media_profiles.xml $basedir/media_profiles.xml
-$awk -v bitrate=$bit -f $basedir/awk/mediaprofilesxml.awk $basedir/media_profiles.xml > $basedir/media_profiles.xml.mod
-
-FSIZE=`ls -l $basedir/media_profiles.xml.mod | $awk '{ print $5 }'`
-log ""
-log "media_profiles.xml.mod filesize: $FSIZE"
-log ""
-if [[ -s $basedir/media_profiles.xml.mod ]]; then
-  cp $basedir/media_profiles.xml.mod /system/etc/media_profiles.xml
-else
-  ui_print "WARNING: Tweaking media_profiles.xml failed! Continue without tweaks"
-  warning=$((warning + 1))
-fi
-#endif //DEVICE_XOOM
-#endif // USES_BITRATE
-
   ui_print ""
 cp /system/build.prop $basedir/build.prop
   ui_print "Saving build.prop copies..."
 cp /system/build.prop /sdcard/build.prop.bak
 cp /system/build.prop /system/build.prop.bak
-$awk '/^wifi.supplicant_scan_interval/ {print "wifi.supplicant_scan_interval=320"; found=1} !/^wifi.supplicant_scan_interval/ {print $0} END {if (!found) {print "wifi.supplicant_scan_interval=320" }}' $basedir/build.prop > $basedir/build.prop.mod0
-$awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=150"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=150" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
-$awk '/^ro.telephony.call_ring.delay/ {print "ro.telephony.call_ring.delay=400"; found=1} !/^ro.telephony.call_ring.delay/ {print $0} END {if (!found) {print "ro.telephony.call_ring.delay=400" }}' $basedir/build.prop.mod1 > $basedir/build.prop.mod2
-$awk '/^dalvik.vm.heapsize/ {print "dalvik.vm.heapsize=48m"; found=1} !/^dalvik.vm.heapsize/ {print $0} END {if (!found) {print "dalvik.vm.heapsize=48m" }}' $basedir/build.prop.mod2 > $basedir/build.prop.mod3
-$awk '/^ro.lg.proximity.delay/ {print "ro.lg.proximity.delay=25"; found=1} !/^ro.lg.proximity.delay/ {print $0} END {if (!found) {print "ro.lg.proximity.delay=25" }}' $basedir/build.prop.mod3 > $basedir/build.prop.mod4
-$awk '/^persist.sys.use_dithering/ {print "persist.sys.use_dithering=0"; found=1} !/^persist.sys.use_dithering/ {print $0} END {if (!found) {print "persist.sys.use_dithering=0" }}' $basedir/build.prop.mod4 > $basedir/build.prop.mod5
-$awk '/^persist.sys.purgeable_assets/ {print "persist.sys.purgeable_assets=1"; found=1} !/^persist.sys.purgeable_assets/ {print $0} END {if (!found) {print "persist.sys.purgeable_assets=1" }}' $basedir/build.prop.mod5 > $basedir/build.prop.mod6
-$awk '/^ro.wifi.channels/ {print "ro.wifi.channels=14"; found=1} !/^ro.wifi.channels/ {print $0} END {if (!found) {print "ro.wifi.channels=14" }}' $basedir/build.prop.mod6 > $basedir/build.prop.mod7
-$awk '/^debug.sf.hw/ {print "debug.sf.hw=1"; found=1} !/^debug.sf.hw/ {print $0} END {if (!found) {print "debug.sf.hw=1" }}' $basedir/build.prop.mod7 > $basedir/build.prop.mod8
-$awk '/^debug.performance.tuning/ {print "debug.performance.tuning=1"; found=1} !/^debug.performance.tuning/ {print $0} END {if (!found) {print "debug.performance.tuning=1" }}' $basedir/build.prop.mod8 > $basedir/build.prop.mod9
-$awk '/^video.accelerate.hw/ {print "video.accelerate.hw=1"; found=1} !/^video.accelerate.hw/ {print $0} END {if (!found) {print "video.accelerate.hw=1" }}' $basedir/build.prop.mod9 > $basedir/build.prop.mod10
-$awk '/^ro.config.hwfeature_wakeupkey/ {print "ro.config.hwfeature_wakeupkey=0"; found=1} !/^ro.config.hwfeature_wakeupkey/ {print $0} END {if (!found) {print "ro.config.hwfeature_wakeupkey=0" }}' $basedir/build.prop.mod10 > $basedir/build.prop.mod11
-$awk '/^net.tcp.buffersize.default/ {print "net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.default/ {print $0} END {if (!found) {print "net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod11 > $basedir/build.prop.mod12
-$awk '/^net.tcp.buffersize.wifi/ {print "net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.wifi/ {print $0} END {if (!found) {print "net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod12 > $basedir/build.prop.mod13
-$awk '/^net.tcp.buffersize.umts/ {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.umts/ {print $0} END {if (!found) {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod13 > $basedir/build.prop.mod14
-$awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod14 > $basedir/build.prop.mod15
-$awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod15 > $basedir/build.prop.mod16
-$awk '/^ro.setupwizard.mode=DISABLED/ {print "ro.setupwizard.mode=DISABLED=DISABLED"; found=1} !/^ro.setupwizard.mode=DISABLED/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED=DISABLED" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod
+$awk -f $basedir/awk/buildprop.awk $basedir/build.prop > $basedir/build.prop.mod
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
 log ""
@@ -404,9 +256,8 @@ else
   ui_print "WARNING: Tweaking build.prop failed! Continue without tweaks"
   warning=$((warning + 1))
 fi
-  $BB rm $basedir/build.prop.mod*
+  $BB rm -rf $basedir/build.prop.mod*
 
-#ifdef DEVICE_LGP990
 cp /system/etc/vold.fstab $basedir/vold.fstab
 $awk -v int2ext=$int2ext -f $basedir/awk/voldfstab.awk $basedir/vold.fstab > $basedir/vold.fstab.mod
 
@@ -421,14 +272,11 @@ else
   ui_print "WARNING: Tweaking vold.fstab failed! Continue without tweaks"
   warning=$((warning + 1))
 fi
-#endif // DEVICE_LGP990
 
-#ifdef DEVICE_LGP990
 if [ "$ril" == "1" ]; then
     rm /system/lib/lge-ril.so
     cp $basedir/files/ril/$rildate/lge-ril.so /system/lib/lge-ril.so
 fi
-#endif // DEVICE_LGP990
 
 if [ "$debug" == "1" ]; then
     cp $basedir/files/80log /system/etc/init.d/80log
@@ -440,17 +288,25 @@ if [ "$ext4" == "1" ]; then
   if [ "$extrdy" == "1" ]; then
     umount /system
     umount /data
+    umount /cache
     
-    ui_print ""
-    ui_print "Converting file-systems to EXT4..."
+ui_print ""
+ui_print "Converting file-systems to EXT4..."
     tune2fs -O extents,uninit_bg,dir_index DATA_PARTITION
     e2fsck -p DATA_PARTITION
     tune2fs -O extents,uninit_bg,dir_index DATA_PARTITION
     e2fsck -p DATA_PARTITION
+ui_print "/data converted;"
     tune2fs -O extents,uninit_bg,dir_index SYSTEM_PARTITION
     e2fsck -p SYSTEM_PARTITION
     tune2fs -O extents,uninit_bg,dir_index SYSTEM_PARTITION
     e2fsck -p SYSTEM_PARTITION
+ui_print "/system converted;"
+    tune2fs -O extents,uninit_bg,dir_index CACHE_PARTITION
+    e2fsck -p CACHE_PARTITION
+    tune2fs -O extents,uninit_bg,dir_index CACHE_PARTITION
+    e2fsck -p CACHE_PARTITION
+ui_print "/cache converted."
   fi
 fi
 #endif
@@ -460,9 +316,9 @@ if [ -n "$flags" ]; then
 fi
 
 if [ "$debug" == "1" ]; then
-  rm -r /sdcard/vorkDebug
-  mkdir /sdcard/vorkDebug
-  cp -r $basedir/. /sdcard/vorkDebug/
+  rm -r /sdcard/ironDebug
+  mkdir /sdcard/ironDebug
+  cp -r $basedir/. /sdcard/ironDebug/
 fi
 
 ui_print ""

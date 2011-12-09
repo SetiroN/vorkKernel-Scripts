@@ -1,6 +1,8 @@
 #!/system/bin/sh  
 
 # MinFree and VM parameters;
+echo "500" /proc/sys/vm/dirty_writeback_centisecs;
+echo "3000" /proc/sys/vm/dirty_expire_centisecs;
 echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj;
 echo "2560,4096,6144,7680,8704,10240" > /sys/module/lowmemorykiller/parameters/minfree;
@@ -9,7 +11,4 @@ echo "8" > /proc/sys/vm/swappiness;
 chmod 666 /sys/devices/system/cpu/cpu1/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
 chmod 444 /sys/devices/system/cpu/cpu1/online
-# Failsafe remount opt;
-busybox mount -o remount,noauto_da_alloc /system /system
-busybox mount -o remount,noauto_da_alloc /data /data
-busybox mount -o remount,noauto_da_alloc /cache /cache
+

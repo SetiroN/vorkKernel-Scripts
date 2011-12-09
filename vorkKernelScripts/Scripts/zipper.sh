@@ -3,10 +3,10 @@
 cd $VORKSCRIPT_DIR
 
 if [ "$1" == "Awesome" ]; then
-	echo "#!/sbin/sh" > $1.zip/tmp/vorkKernel/installkernel.sh
-	cpp -D DEVICE_$device mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $1.zip/tmp/vorkKernel/installkernel.sh
+	echo "#!/sbin/sh" > $1.zip/tmp/ironkrnL/installkernel.sh
+	cpp -D DEVICE_$device mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $1.zip/tmp/ironkrnL/installkernel.sh
 	if [ "$device" == "LGP990" ]; then
-		cp -r mdfiles/ril $1.zip/tmp/vorkKernel/files
+		cp -r mdfiles/ril $1.zip/tmp/ironkrnL/files
 	fi
 fi
 
