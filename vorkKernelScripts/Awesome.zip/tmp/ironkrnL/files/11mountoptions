@@ -2,6 +2,8 @@
 
 tune2fs -o journal_data_writeback /dev/block/mmcblk0p1
 tune2fs -O ^has_journal /dev/block/mmcblk0p1
+tune2fs -o journal_data_writeback /dev/block/mmcblk0p2
+tune2fs -O ^has_journal /dev/block/mmcblk0p1
 tune2fs -o journal_data_writeback /dev/block/mmcblk0p8
 tune2fs -O ^has_journal /dev/block/mmcblk0p8
 tune2fs -o journal_data_writeback /block/path/to/system
@@ -48,32 +50,4 @@ busybox mount -o remount,commit=120 mmcblk0p8
 busybox mount -o remount,noauto_da_alloc /system /system
 busybox mount -o remount,noauto_da_alloc /data /data
 busybox mount -o remount,noauto_da_alloc /cache /cache
-
-echo "bfq" > /sys/block/mmcblk0/queue/scheduler
-echo "bfq" > /sys/block/mmcblk1/queue/scheduler
-echo "bfq" > /sys/block/zram0/queue/scheduler
-echo "bfq" > /sys/block/loop0/queue/scheduler
-echo "bfq" > /sys/block/loop1/queue/scheduler
-echo "bfq" > /sys/block/loop2/queue/scheduler
-echo "bfq" > /sys/block/loop3/queue/scheduler
-echo "bfq" > /sys/block/loop4/queue/scheduler
-echo "bfq" > /sys/block/loop5/queue/scheduler
-echo "bfq" > /sys/block/loop6/queue/scheduler
-echo "bfq" > /sys/block/loop7/queue/scheduler
-echo "bfq" > /sys/block/loop8/queue/scheduler
-echo "bfq" > /sys/block/loop9/queue/scheduler
-echo "bfq" > /sys/block/loop10/queue/scheduler
-echo "bfq" > /sys/block/loop11/queue/scheduler
-echo "bfq" > /sys/block/dm-0/queue/scheduler
-echo "bfq" > /sys/block/dm-1/queue/scheduler
-echo "bfq" > /sys/block/dm-2/queue/scheduler
-echo "bfq" > /sys/block/dm-3/queue/scheduler
-echo "bfq" > /sys/block/dm-4/queue/scheduler
-echo "bfq" > /sys/block/dm-5/queue/scheduler
-echo "bfq" > /sys/block/dm-6/queue/scheduler
-echo "bfq" > /sys/block/dm-7/queue/scheduler
-echo "bfq" > /sys/block/dm-8/queue/scheduler
-echo "bfq" > /sys/block/dm-9/queue/scheduler
-echo "bfq" > /sys/block/dm-10/queue/scheduler
-echo "bfq" > /sys/block/dm-11/queue/scheduler
 

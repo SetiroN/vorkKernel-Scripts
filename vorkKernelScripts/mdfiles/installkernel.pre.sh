@@ -239,9 +239,10 @@ fi
 
   ui_print ""
 cp /system/build.prop $basedir/build.prop
-  ui_print "Saving build.prop copies..."
+  ui_print "Saving build.prop backups..."
 cp /system/build.prop /sdcard/build.prop.bak
 cp /system/build.prop /system/build.prop.bak
+  ui_print "Applying tweaks..."
 $awk -f $basedir/awk/buildprop.awk $basedir/build.prop > $basedir/build.prop.mod
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
@@ -251,12 +252,12 @@ log ""
 
 if [[ -s $basedir/build.prop.mod ]]; then
   cp $basedir/build.prop.mod /system/build.prop
-  ui_print "Applying build.prop tweaks..."
 else
   ui_print "WARNING: Tweaking build.prop failed! Continue without tweaks"
   warning=$((warning + 1))
 fi
   $BB rm -rf $basedir/build.prop.mod*
+  ui_print "build.prop successfully tweaked."
 
 cp /system/etc/vold.fstab $basedir/vold.fstab
 $awk -v int2ext=$int2ext -f $basedir/awk/voldfstab.awk $basedir/vold.fstab > $basedir/vold.fstab.mod
