@@ -126,10 +126,6 @@ if [ ! -d $source_dir/lge-kernel-star ]; then
 fi
 
 echo "Setting up kernel..."
-rm ~/lge-kernel-star/arch/arm/mach-tegra/*/*/*/*.o
-rm ~/lge-kernel-star/arch/arm/mach-tegra/*/*/*.o
-rm ~/lge-kernel-star/arch/arm/mach-tegra/*/*.o
-rm ~/lge-kernel-star/arch/arm/mach-tegra/*.o
 make -C $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" setiron_defconfig
 if [ "$?" != "0" ]; then
 	die "Error setting up kernel"
