@@ -239,9 +239,13 @@ fi
 
   ui_print ""
 cp /system/build.prop $basedir/build.prop
+cp /sdcard/build.prop.bak $basedir/build.prop
+cp /system/build.prop.bak $basedir/build.prop
   ui_print "Saving build.prop backups..."
-cp /system/build.prop /sdcard/build.prop.bak
-cp /system/build.prop /system/build.prop.bak
+cp /system/build.prop /sdcard/build.prop.bck
+cp /system/build.prop /system/build.prop.bck
+chmod 777 /sdcard/build.prop.bck
+chmod 777 /system/build.prop.bck
   ui_print "Applying tweaks..."
 $awk '/^wifi.supplicant_scan_interval/ {print "wifi.supplicant_scan_interval=320"; found=1} !/^wifi.supplicant_scan_interval/ {print $0} END {if (!found) {print "wifi.supplicant_scan_interval=320" }}' $basedir/build.prop > $basedir/build.prop.mod0
 $awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=150"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=1500" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
@@ -260,7 +264,7 @@ $awk '/^net.tcp.buffersize.wifi/ {print "net.tcp.buffersize.wifi=4096,87380,2569
 $awk '/^net.tcp.buffersize.umts/ {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.umts/ {print $0} END {if (!found) {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod13 > $basedir/build.prop.mod14
 $awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod14 > $basedir/build.prop.mod15
 $awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod15 > $basedir/build.prop.mod16
-$awk '/^ro.setupwizard.mode=DISABLED/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod
+$awk '/^ro.setupwizard.mode/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
 log ""
@@ -275,39 +279,20 @@ else
 fi
   ui_print "build.prop successfully tweaked."
 
-cp /system/etc/vold.fstab $basedir/vold.fstab
-$awk -v int2ext=$int2ext -f $basedir/awk/voldfstab.awk $basedir/vold.fstab > $basedir/vold.fstab.mod
-
-FSIZE=`ls -l $basedir/vold.fstab.mod | $awk '{ print $5 }'`
-log ""
-log "vold.fstab.mod filesize: $FSIZE"
-log ""
-
-if [[ -s $basedir/vold.fstab.mod ]]; then
-  cp $basedir/vold.fstab.mod /system/etc/vold.fstab
-else
-  ui_print "WARNING: Tweaking vold.fstab failed! Continue without tweaks"
-  warning=$((warning + 1))
-fi
-
-if [ "$ril" == "1" ]; then
-    rm /system/lib/lge-ril.so
-    cp $basedir/files/ril/$rildate/lge-ril.so /system/lib/lge-ril.so
-fi
-
 if [ "$debug" == "1" ]; then
     cp $basedir/files/80log /system/etc/init.d/80log
 	chmod 755 /system/etc/init.d/80log
 fi
 
-#ifdef EXT4_RDY
-if [ "$ext4" == "1" ]; then
-  if [ "$extrdy" == "1" ]; then
+ui_print ""
+ui_print "Unmounting partitions..."
     umount /system
     umount /data
     umount /cache
-    
-ui_print ""
+
+#ifdef EXT4_RDY
+if [ "$ext4" == "1" ]; then
+  if [ "$extrdy" == "1" ]; then
 ui_print "Converting file-systems to EXT4..."
     tune2fs -O extents,uninit_bg,dir_index DATA_PARTITION
     e2fsck -p DATA_PARTITION
@@ -327,10 +312,6 @@ ui_print "/cache converted."
   fi
 fi
 #endif
-
-if [ -n "$flags" ]; then
-    ui_print ""
-fi
 
 if [ "$debug" == "1" ]; then
   rm -r /sdcard/ironDebug

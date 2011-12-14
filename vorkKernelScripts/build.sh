@@ -6,14 +6,13 @@ script_dir="$source_dir/vorkKernel-Scripts/vorkKernelScripts"
 start_dir="`pwd`"
 cores="`grep processor /proc/cpuinfo | wc -l`"
 now="`date +"%Y%m%d"h"%H%M"`"
-release="test"
 build_device="LGP990"
 
 # Functions
 function die () { echo $@; exit 1; }
 
 # Device specific functions
-function LGP990() { toolchain="$HOME/vorkChain/toolchain/bin/arm-eabi-"; ramhack96=1; ramhack80=0; ramhack48=0; ramhack32=1; ramhack0=1; }
+function LGP990() { toolchain="$HOME/vorkChain/toolchain/bin/arm-eabi-"; ramhack96=1; ramhack80=1; ramhack48=1; ramhack32=1; ramhack0=0; }
 function LGP990_zip() {
 	case $1 in
 		"do")   
@@ -97,7 +96,7 @@ function LGP990_ramhack0() {
 }
 
 
-echo "Setting up a $build_device $release build"
+echo "Setting up build"
 $build_device
 
 if [ "`which ccache`" != "" -a "$USE_CCACHE" == "1" ]; then # We have ccache and want to use it
@@ -156,7 +155,7 @@ echo "#!/sbin/sh" > $script_dir/Awesome.zip/tmp/ironkrnL/installkernel.sh
 cpp -D DEVICE_$build_device $script_dir/mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $script_dir/Awesome.zip/tmp/ironkrnL/installkernel.sh
 "$build_device"_zip do
 cd $script_dir/Awesome.zip/
-zip -qr $zip_location *
+zip -qr9 $zip_location *
 cd -
 "$build_device"_zip clean
 
@@ -195,7 +194,7 @@ if [ "$ramhack80" == "1" ]; then
 	cpp -D DEVICE_$build_device $script_dir/mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $script_dir/Awesome.zip/tmp/ironkrnL/installkernel.sh
 	"$build_device"_zip do
 	cd $script_dir/Awesome.zip/
-	zip -qr $ramhack80_zip_location *
+	zip -qr9 $ramhack80_zip_location *
 	cd -
 	"$build_device"_zip clean
 	"$build_device"_ramhack80 clean
@@ -236,7 +235,7 @@ if [ "$ramhack96" == "1" ]; then
 	cpp -D DEVICE_$build_device $script_dir/mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $script_dir/Awesome.zip/tmp/ironkrnL/installkernel.sh
 	"$build_device"_zip do
 	cd $script_dir/Awesome.zip/
-	zip -qr $ramhack96_zip_location *
+	zip -qr9 $ramhack96_zip_location *
 	cd -
 	"$build_device"_zip clean
 	"$build_device"_ramhack96 clean
@@ -277,7 +276,7 @@ if [ "$ramhack32" == "1" ]; then
 	cpp -D DEVICE_$build_device $script_dir/mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $script_dir/Awesome.zip/tmp/ironkrnL/installkernel.sh
 	"$build_device"_zip do
 	cd $script_dir/Awesome.zip/
-	zip -qr $ramhack32_zip_location *
+	zip -qr9 $ramhack32_zip_location *
 	cd -
 	"$build_device"_zip clean
 	"$build_device"_ramhack32 clean
@@ -318,7 +317,7 @@ if [ "$ramhack0" == "1" ]; then
 	cpp -D DEVICE_$build_device $script_dir/mdfiles/installkernel.pre.sh | awk '/# / { next; } { print; }' >> $script_dir/Awesome.zip/tmp/ironkrnL/installkernel.sh
 	"$build_device"_zip do
 	cd $script_dir/Awesome.zip/
-	zip -qr $ramhack0_zip_location *
+	zip -qr9 $ramhack0_zip_location *
 	cd -
 	"$build_device"_zip clean
 	"$build_device"_ramhack0 clean
