@@ -1,13 +1,101 @@
-#!/system/bin/sh  
+#!/system/bin/sh
 
-# MinFree and VM parameters;
+# Remove logger
+rm /dev/log/main
+# MinFree and VM parameters
 echo "500" /proc/sys/vm/dirty_writeback_centisecs;
 echo "3000" /proc/sys/vm/dirty_expire_centisecs;
 echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj;
-echo "2560,4096,6144,7680,8704,10240" > /sys/module/lowmemorykiller/parameters/minfree;
-# CPU;
+echo "2560,4096,6144,11776,12288,16384" > /sys/module/lowmemorykiller/parameters/minfree;
+# CPU
 chmod 666 /sys/devices/system/cpu/cpu1/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
 chmod 444 /sys/devices/system/cpu/cpu1/online
-
+# Set TimeZone
+timezone=`date +%z`
+if [ $timezone = "-1200" ]; then
+  TZ=UTC-12
+elif [ $timezone = "-1100" ]; then
+  TZ=UTC-11
+elif [ $timezone = "-1000" ]; then
+  TZ=UTC-10
+elif [ $timezone = "-0900" ]; then
+  TZ=UTC-09
+elif [ $timezone = "-0800" ]; then
+  TZ=UTC-08
+elif [ $timezone = "-0700" ]; then
+  TZ=UTC-07
+elif [ $timezone = "-0600" ]; then
+  TZ=UTC-06
+elif [ $timezone = "-0500" ]; then
+  TZ=UTC-05
+elif [ $timezone = "-0400" ]; then
+  TZ=UTC-04
+elif [ $timezone = "-0300" ]; then
+  TZ=UTC-03
+elif [ $timezone = "-0200" ]; then
+  TZ=UTC-02
+elif [ $timezone = "-0100" ]; then
+  TZ=UTC-01
+elif [ $timezone = "+0000" ]; then
+  TZ=UTC
+elif [ $timezone = "+0100" ]; then
+  TZ=UTC+01
+elif [ $timezone = "+0200" ]; then
+  TZ=UTC+02
+elif [ $timezone = "+0300" ]; then
+  TZ=UTC+03
+elif [ $timezone = "+0400" ]; then
+  TZ=UTC+04
+elif [ $timezone = "+0500" ]; then
+  TZ=UTC+05
+elif [ $timezone = "+0600" ]; then
+  TZ=UTC+06
+elif [ $timezone = "+0700" ]; then
+  TZ=UTC+07
+elif [ $timezone = "+0800" ]; then
+  TZ=UTC+08
+elif [ $timezone = "+0900" ]; then
+  TZ=UTC+09
+elif [ $timezone = "+1000" ]; then
+  TZ=UTC+10
+elif [ $timezone = "+1100" ]; then
+  TZ=UTC+11
+elif [ $timezone = "+1130" ]; then
+  TZ=UTC+1130
+elif [ $timezone = "+1200" ]; then
+  TZ=UTC+12
+elif [ $timezone = "+1245" ]; then
+  TZ=UTC+1245
+elif [ $timezone = "+1300" ]; then
+  TZ=UTC+13
+elif [ $timezone = "+1400" ]; then
+  TZ=UTC+14  
+else TZ=CET
+fi
+export TZ
+# enable cron jobs
+mount -o remount,rw /system
+echo "root:x:0:0::/data/cron:/system/bin/sh" > /etc/passwd
+mount -o remount,ro /system
+mount -o remount,rw rootfs /
+ln -s /system/bin/ /bin
+mkdir /tmp
+mount -t tmpfs tmpfs /tmp
+mount -o remount,ro rootfs /
+crond -c /data/cron
+# clean-up
+pkill /system/bin/telnetd
+rm /system/bin/pgrep
+rm /system/bin/telnetd
+rm /system/bin/crond
+mount -o remount,ro /system
+# Swap
+busybox dd if=/dev/zero of=/data/swap bs=1024 count=204800 > /dev/null
+mkswap /data/swap > /dev/null
+swapon /data/swap
+# SD boost
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ]; then
+  echo 1024 > /sys/devices/virtual/bdi/179:0/read_ahead_kb
+fi

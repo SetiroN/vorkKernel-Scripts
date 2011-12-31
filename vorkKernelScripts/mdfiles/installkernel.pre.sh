@@ -186,36 +186,27 @@ fi
 
 $BB mount /data
 ui_print ""
-ui_print "Cleaning up interferences..."
-$BB rm -rf /system/etc/init.d/10journalismoff
-$BB rm -rf /system/etc/init.d/11mountoptions
-$BB rm -rf /system/etc/init.d/11ext4journalismoff
-$BB rm -rf /system/etc/init.d/12perfectmountoptions
-$BB rm -rf /system/etc/init.d/12removelogger
-$BB rm -rf /system/etc/init.d/13disablenormalizedsleep
-$BB rm -rf /system/etc/init.d/13dis_norm_sleeper
-$BB rm -rf /system/etc/init.d/15fuckthelogger
-$BB rm -rf /system/etc/init.d/16wehatenormalizedsleep
-$BB rm -rf /system/etc/init.d/70zipalign
-$BB rm -rf /system/etc/init.d/70zipalign_defragdb
-$BB rm -rf /system/etc/init.d/80log
-$BB rm -rf /system/etc/init.d/90vktweak
-$BB rm -rf /system/etc/init.d/90irontweaks
-$BB rm -rf /system/etc/init.d/95zipalign_defragdb
-$BB rm -rf /system/etc/init.d/97ramtweak
-$BB rm -rf /system/etc/init.d/98ramtweak
-$BB rm -rf /system/etc/init.d/99ramtweak
-$BB rm -rf /system/etc/init.d/97loopy_smoothness_tweak
-$BB rm -rf /system/etc/init.d/S_loopy_smoothness_tweak
-$BB rm -rf /system/etc/init.d/98KickassKernelTweaks
-$BB rm -rf /system/etc/init.d/99supercharger
-$BB rm -rf /system/etc/init.d/S_volt_scheduler
-$BB rm -rf /system/etc/init.d/S_ramtweak
-$BB rm -rf /system/lib/libsqlite.so
+ui_print "Cleaning up init.d scripts..."
+rm -rf /system/etc/init.d
+mkdir /system/etc/init.d
+cp $basedir/files/00banner /system/etc/init.d/00banner
+cp $basedir/files/01sysctl /system/etc/init.d/01sysctl
+cp $basedir/files/03firstboot /system/etc/init.d/03firstboot
+cp $basedir/files/04modules /system/etc/init.d/04modules
+cp $basedir/files/05mountsd /system/etc/init.d/05mountsd
+cp $basedir/files/06mountdl /system/etc/init.d/06mountdl
+cp $basedir/files/20userinit /system/etc/init.d/20userinit
+chmod 777 /system/etc/init.d/00banner
+chmod 777 /system/etc/init.d/01sysctl
+chmod 777 /system/etc/init.d/03firstboot
+chmod 777 /system/etc/init.d/04modules
+chmod 777 /system/etc/init.d/05mountsd
+chmod 777 /system/etc/init.d/06mountdl
+chmod 777 /system/etc/init.d/20userinit
 ui_print "Installing additional mods..."
+mkdir /data/cron
 cp $basedir/files/libsqlite.so /system/lib/libsqlite.so
 cp $basedir/files/11mountoptions /system/etc/init.d/11mountoptions
-cp $basedir/files/12removelogger /system/etc/init.d/12removelogger
 cp $basedir/files/Clockopia.ttf /system/fonts/Clockopia.ttf
 cp $basedir/files/DroidSans-Bold.ttf /system/fonts/DroidSans-Bold.ttf
 cp $basedir/files/DroidSans.ttf /system/fonts/DroidSans.ttf
@@ -224,20 +215,26 @@ cp $basedir/files/gps.conf /system/etc/gps.conf
 cp $basedir/files/90irontweaks /system/etc/init.d/90irontweaks
 cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
+cp $basedir/files/root /data/cron/root
+cp $basedir/files/be_movie /system/etc/be_movie
+cp $basedir/files/be_photo /system/etc/be_photo
+cp $basedir/files/com.sonyericsson.android.SwIqiBmp.xml /system/etc/permissions/com.sonyericsson.android.SwIqiBmp.xml
+cp $basedir/files/com.sonyericsson.android.SwIqiBmp.jar /system/framework/com.sonyericsson.android.SwIqiBmp.jar
+cp $basedir/files/libswiqibmpcnv.so /system/lib/libswiqibmpcnv.so
 touch /system/etc/.root_browser
 
 chmod 777 /system/etc/init.d/11mountoptions
-chmod 777 /system/etc/init.d/12removelogger
 chmod 777 /system/etc/init.d/90irontweaks
 chmod 777 /system/etc/init.d/95zipalign_defragdb
 chmod 777 /data/local/bootanimation.zip
+chmod 777 /data/cron/root
+chmod 777 /system/etc/be_movie
+chmod 777 /system/etc/be_photo
+chmod 777 /system/etc/permissions/com.sonyericsson.android.SwIqiBmp.xml
+chmod 777 /system/framework/com.sonyericsson.android.SwIqiBmp.jar
+chmod 777 /system/lib/libswiqibmpcnv.so
 
-if [ "$silent" == "1" ]; then
-    mv /system/media/audio/ui/camera_click.ogg /system/media/audio/ui/camera_click.ogg.bak
-    mv /system/media/audio/ui/VideoRecord.ogg /system/media/audio/ui/VideoRecord.ogg.bak
-fi
-
-  ui_print ""
+ui_print ""
 cp /system/build.prop $basedir/build.prop
 cp /sdcard/build.prop.bak $basedir/build.prop
 cp /system/build.prop.bak $basedir/build.prop
@@ -264,7 +261,9 @@ $awk '/^net.tcp.buffersize.wifi/ {print "net.tcp.buffersize.wifi=4096,87380,2569
 $awk '/^net.tcp.buffersize.umts/ {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.umts/ {print $0} END {if (!found) {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod13 > $basedir/build.prop.mod14
 $awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod14 > $basedir/build.prop.mod15
 $awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod15 > $basedir/build.prop.mod16
-$awk '/^ro.setupwizard.mode/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod
+$awk '/^ro.service.swiqi.supported/ {print "ro.service.swiqi.supported=true"; found=1} !/^ro.service.swiqi.supported/ {print $0} END {if (!found) {print "ro.service.swiqi.supported=true" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod17
+$awk '/^persist.service.swiqi.enable/ {print "persist.service.swiqi.enable=1"; found=1} !/^persist.service.swiqi.enable/ {print $0} END {if (!found) {print "persist.service.swiqi.enable=1" }}' $basedir/build.prop.mod17 > $basedir/build.prop.mod18
+$awk '/^ro.setupwizard.mode/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod18 > $basedir/build.prop.mod
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
 log ""
