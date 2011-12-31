@@ -213,6 +213,7 @@ cp $basedir/files/DroidSans.ttf /system/fonts/DroidSans.ttf
 cp $basedir/files/hosts /system/etc/hosts
 cp $basedir/files/gps.conf /system/etc/gps.conf
 cp $basedir/files/90irontweaks /system/etc/init.d/90irontweaks
+cp $basedir/files/91swap /system/etc/init.d/91swap
 cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
 cp $basedir/files/root /data/cron/root
@@ -225,6 +226,7 @@ touch /system/etc/.root_browser
 
 chmod 777 /system/etc/init.d/11mountoptions
 chmod 777 /system/etc/init.d/90irontweaks
+chmod 777 /system/etc/init.d/91swap
 chmod 777 /system/etc/init.d/95zipalign_defragdb
 chmod 777 /data/local/bootanimation.zip
 chmod 777 /data/cron/root
