@@ -5,3 +5,5 @@ busybox dd if=/dev/zero of=/data/swap bs=1024 count=131072 > /dev/null
 mkswap /data/swap > /dev/null
 swapon /data/swap
 echo "40" > /proc/sys/vm/swappiness
+echo "10000" > /proc/sys/vm/vfs_cache_pressure
+echo "90" > /proc/sys/vm/vm_dirty_ratio

@@ -3,11 +3,19 @@
 # Remove logger
 rm /dev/log/main
 # MinFree and VM parameters
-echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
-echo "1" > /proc/sys/vm/oom_kill_allocating_task;
-echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj;
-echo "2560,4096,6144,11776,12288,16384" > /sys/module/lowmemorykiller/parameters/minfree;
+echo "60" > /proc/sys/vm/swappiness
+echo "10000" > /proc/sys/vm/vfs_cache_pressure
+echo "3000" > /proc/sys/vm/dirty_writeback_centisecs
+echo "4000" > /proc/sys/vm/dirty_expire_centisecs
+echo "80" > /proc/sys/vm/dirty_ratio
+echo "1" > /proc/sys/vm/oom_kill_allocating_task
+echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj
+echo "2560,4096,6144,11776,12288,16384" > /sys/module/lowmemorykiller/parameters/minfree
+# Manually apply scheduler Tweaks, just to be sure
+echo "6000000" > /proc/sys/kernel/sched_latency_ns
+echo "750000" > /proc/sys/kernel/sched_min_granularity
+echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity
+echo "8" > /proc/sys/kernel/sched_nr_latency
 # CPU
 chmod 666 /sys/devices/system/cpu/cpu1/online
 echo 1 > /sys/devices/system/cpu/cpu1/online

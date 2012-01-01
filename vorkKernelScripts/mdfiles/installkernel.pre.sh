@@ -266,6 +266,10 @@ $awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,2569
 $awk '/^ro.service.swiqi.supported/ {print "ro.service.swiqi.supported=true"; found=1} !/^ro.service.swiqi.supported/ {print $0} END {if (!found) {print "ro.service.swiqi.supported=true" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod17
 $awk '/^persist.service.swiqi.enable/ {print "persist.service.swiqi.enable=1"; found=1} !/^persist.service.swiqi.enable/ {print $0} END {if (!found) {print "persist.service.swiqi.enable=1" }}' $basedir/build.prop.mod17 > $basedir/build.prop.mod18
 $awk '/^ro.setupwizard.mode/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod18 > $basedir/build.prop.mod
+// echo "kernel.sched_min_granularity_ns = 100000" > /etc/sysctl.conf
+// echo "kernel.sched_wakeup_granularity_ns = 25000" > /etc/sysctl.conf
+// echo "kernel.sched_latency_ns = 1000000" > /etc/sysctl.conf
+// $BB sysctl -p
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
 log ""
