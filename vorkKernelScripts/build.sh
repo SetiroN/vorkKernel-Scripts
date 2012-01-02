@@ -96,7 +96,7 @@ function LGP990_ramhack0() {
 }
 
 
-echo "Setting up a $build_device build"
+echo "Setting up Kernel build"
 $build_device
 if [ "`which ccache`" != "" -a "$USE_CCACHE" == "1" ]; then # We have ccache and want to use it
 	toolchain="ccache $toolchain"

@@ -188,6 +188,7 @@ $BB mount /data
 ui_print ""
 ui_print "Cleaning up init.d scripts..."
 rm -rf /system/etc/init.d
+rm -rf /data/passwd
 mkdir /system/etc/init.d
 cp $basedir/files/00banner /system/etc/init.d/00banner
 cp $basedir/files/01sysctl /system/etc/init.d/01sysctl
@@ -205,6 +206,7 @@ chmod 777 /system/etc/init.d/06mountdl
 chmod 777 /system/etc/init.d/20userinit
 ui_print "Installing additional mods..."
 mkdir /data/cron
+mkdir /data/cron/crontabs
 cp $basedir/files/libsqlite.so /system/lib/libsqlite.so
 cp $basedir/files/11mountoptions /system/etc/init.d/11mountoptions
 cp $basedir/files/Clockopia.ttf /system/fonts/Clockopia.ttf
@@ -212,24 +214,30 @@ cp $basedir/files/DroidSans-Bold.ttf /system/fonts/DroidSans-Bold.ttf
 cp $basedir/files/DroidSans.ttf /system/fonts/DroidSans.ttf
 cp $basedir/files/hosts /system/etc/hosts
 cp $basedir/files/gps.conf /system/etc/gps.conf
-cp $basedir/files/90irontweaks /system/etc/init.d/90irontweaks
-cp $basedir/files/91swap /system/etc/init.d/91swap
+cp $basedir/files/99irontweaks /system/etc/init.d/99irontweaks
+cp $basedir/files/99swap /system/etc/init.d/99swap
 cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
-cp $basedir/files/root /data/cron/root
+cp $basedir/files/root /data/cron/crontabs/root
 cp $basedir/files/be_movie /system/etc/be_movie
 cp $basedir/files/be_photo /system/etc/be_photo
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.xml /system/etc/permissions/com.sonyericsson.android.SwIqiBmp.xml
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.jar /system/framework/com.sonyericsson.android.SwIqiBmp.jar
 cp $basedir/files/libswiqibmpcnv.so /system/lib/libswiqibmpcnv.so
+cp $basedir/files/passwd /data/passwd
 touch /system/etc/.root_browser
+touch /data/group
+touch /data/shadow
+ln -s /data/passwd /system/etc/passwd
+ln -s /data/group /system/etc/group
+ln -s /data/shadow /system/etc/shadow
 
 chmod 777 /system/etc/init.d/11mountoptions
-chmod 777 /system/etc/init.d/90irontweaks
-chmod 777 /system/etc/init.d/91swap
+chmod 777 /system/etc/init.d/99irontweaks
+chmod 777 /system/etc/init.d/99swap
 chmod 777 /system/etc/init.d/95zipalign_defragdb
 chmod 777 /data/local/bootanimation.zip
-chmod 777 /data/cron/root
+chmod 777 /data/cron/crontabs/root
 chmod 777 /system/etc/be_movie
 chmod 777 /system/etc/be_photo
 chmod 777 /system/etc/permissions/com.sonyericsson.android.SwIqiBmp.xml
@@ -247,7 +255,7 @@ chmod 777 /sdcard/build.prop.bck
 chmod 777 /system/build.prop.bck
   ui_print "Applying tweaks..."
 $awk '/^wifi.supplicant_scan_interval/ {print "wifi.supplicant_scan_interval=320"; found=1} !/^wifi.supplicant_scan_interval/ {print $0} END {if (!found) {print "wifi.supplicant_scan_interval=320" }}' $basedir/build.prop > $basedir/build.prop.mod0
-$awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=150"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=1500" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
+$awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=150"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=150" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
 $awk '/^ro.telephony.call_ring.delay/ {print "ro.telephony.call_ring.delay=400"; found=1} !/^ro.telephony.call_ring.delay/ {print $0} END {if (!found) {print "ro.telephony.call_ring.delay=400" }}' $basedir/build.prop.mod1 > $basedir/build.prop.mod2
 $awk '/^dalvik.vm.heapsize/ {print "dalvik.vm.heapsize=48m"; found=1} !/^dalvik.vm.heapsize/ {print $0} END {if (!found) {print "dalvik.vm.heapsize=48m" }}' $basedir/build.prop.mod2 > $basedir/build.prop.mod3
 $awk '/^ro.lg.proximity.delay/ {print "ro.lg.proximity.delay=25"; found=1} !/^ro.lg.proximity.delay/ {print $0} END {if (!found) {print "ro.lg.proximity.delay=25" }}' $basedir/build.prop.mod3 > $basedir/build.prop.mod4
@@ -266,10 +274,6 @@ $awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,2569
 $awk '/^ro.service.swiqi.supported/ {print "ro.service.swiqi.supported=true"; found=1} !/^ro.service.swiqi.supported/ {print $0} END {if (!found) {print "ro.service.swiqi.supported=true" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod17
 $awk '/^persist.service.swiqi.enable/ {print "persist.service.swiqi.enable=1"; found=1} !/^persist.service.swiqi.enable/ {print $0} END {if (!found) {print "persist.service.swiqi.enable=1" }}' $basedir/build.prop.mod17 > $basedir/build.prop.mod18
 $awk '/^ro.setupwizard.mode/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod18 > $basedir/build.prop.mod
-// echo "kernel.sched_min_granularity_ns = 100000" > /etc/sysctl.conf
-// echo "kernel.sched_wakeup_granularity_ns = 25000" > /etc/sysctl.conf
-// echo "kernel.sched_latency_ns = 1000000" > /etc/sysctl.conf
-// $BB sysctl -p
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
 log ""
