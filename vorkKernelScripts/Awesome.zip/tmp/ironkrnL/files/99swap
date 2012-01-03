@@ -1,9 +1,0 @@
-#!/system/bin/sh
-
-# Swap
-busybox dd if=/dev/zero of=/data/swap bs=1024 count=131072 > /dev/null
-mkswap /data/swap > /dev/null
-swapon /data/swap
-swapoff /dev/block/zram0
-swapon /dev/block/zram0 -p 65
-

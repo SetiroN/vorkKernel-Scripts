@@ -1,0 +1,2 @@
+mount -o remount,noatime /dev/block/mmcblk0p1; mount -o remount,noatime /dev/block/mmcblk0p2; mount -o remount,noatime /dev/block/mmcblk0p8; mount -o remount,commit=180 /dev/block/mmcblk0p1; mount -o remount,commit=150 /dev/block/mmcblk0p2; mount -o remount,commit=120 /dev/block/mmcblk0p8; mount -o remount,noauto_da_alloc /system /system; mount -o remount,noauto_da_alloc /data /data; mount -o remount,noauto_da_alloc /cache /cache
+

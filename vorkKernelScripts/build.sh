@@ -12,7 +12,7 @@ build_device="LGP990"
 function die () { echo $@; exit 1; }
 
 # Device specific functions
-function LGP990() { toolchain="$HOME/vorkChain/toolchain/bin/arm-eabi-"; ramhack96=1; ramhack80=1; ramhack48=1; ramhack32=1; ramhack0=1; }
+function LGP990() { toolchain="$HOME/vorkChain/toolchain/bin/arm-eabi-"; ramhack96=1; ramhack80=0; ramhack48=0; ramhack32=1; ramhack0=0; }
 function LGP990_zip() {
 	case $1 in
 		"do")   

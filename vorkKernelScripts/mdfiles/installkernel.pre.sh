@@ -208,15 +208,24 @@ ui_print "Installing additional mods..."
 mkdir /data/cron
 mkdir /data/cron/crontabs
 cp $basedir/files/libsqlite.so /system/lib/libsqlite.so
-cp $basedir/files/11mountoptions /system/etc/init.d/11mountoptions
 cp $basedir/files/Clockopia.ttf /system/fonts/Clockopia.ttf
 cp $basedir/files/DroidSans-Bold.ttf /system/fonts/DroidSans-Bold.ttf
 cp $basedir/files/DroidSans.ttf /system/fonts/DroidSans.ttf
 cp $basedir/files/hosts /system/etc/hosts
 cp $basedir/files/gps.conf /system/etc/gps.conf
-cp $basedir/files/99irontweaks /system/etc/init.d/99irontweaks
-cp $basedir/files/99swap /system/etc/init.d/99swap
+cp $basedir/files/02rmlog /system/etc/init.d/02rmlog
+cp $basedir/files/80mountopt /system/etc/init.d/80mountopt
+cp $basedir/files/81nojournal /system/etc/init.d/81nojournal
+cp $basedir/files/90mmcblk0 /system/etc/init.d/90mmcblk0
+cp $basedir/files/91mmcblk1 /system/etc/init.d/90mmcblk1
+cp $basedir/files/92cron /system/etc/init.d/92cron
+cp $basedir/files/93cpu /system/etc/init.d/93cpu
+cp $basedir/files/94oom /system/etc/init.d/94oom
 cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
+cp $basedir/files/96cfs /system/etc/init.d/96cfs
+cp $basedir/files/97swap /system/etc/init.d/97swap
+cp $basedir/files/98vm /system/etc/init.d/98vm
+cp $basedir/files/99swap /system/etc/init.d/99swap
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
 cp $basedir/files/root /data/cron/crontabs/root
 cp $basedir/files/be_movie /system/etc/be_movie
@@ -224,18 +233,26 @@ cp $basedir/files/be_photo /system/etc/be_photo
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.xml /system/etc/permissions/com.sonyericsson.android.SwIqiBmp.xml
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.jar /system/framework/com.sonyericsson.android.SwIqiBmp.jar
 cp $basedir/files/libswiqibmpcnv.so /system/lib/libswiqibmpcnv.so
-cp $basedir/files/passwd /data/passwd
 touch /system/etc/.root_browser
 touch /data/group
 touch /data/shadow
+touch /data/passwd
 ln -s /data/passwd /system/etc/passwd
 ln -s /data/group /system/etc/group
 ln -s /data/shadow /system/etc/shadow
 
-chmod 777 /system/etc/init.d/11mountoptions
-chmod 777 /system/etc/init.d/99irontweaks
-chmod 777 /system/etc/init.d/99swap
+chmod 777 /system/etc/init.d/02rmlog
+chmod 777 /system/etc/init.d/80mountopt
+chmod 777 /system/etc/init.d/81nojournal
+chmod 777 /system/etc/init.d/90mmcblk0
+chmod 777 /system/etc/init.d/91mmcblk1
+chmod 777 /system/etc/init.d/92cron
+chmod 777 /system/etc/init.d/93cpu
+chmod 777 /system/etc/init.d/94oom
 chmod 777 /system/etc/init.d/95zipalign_defragdb
+chmod 777 /system/etc/init.d/96cfs
+chmod 777 /system/etc/init.d/97swap
+chmod 777 /system/etc/init.d/98vm
 chmod 777 /data/local/bootanimation.zip
 chmod 777 /data/cron/crontabs/root
 chmod 777 /system/etc/be_movie
