@@ -217,7 +217,7 @@ cp $basedir/files/02rmlog /system/etc/init.d/02rmlog
 cp $basedir/files/80mountopt /system/etc/init.d/80mountopt
 cp $basedir/files/81nojournal /system/etc/init.d/81nojournal
 cp $basedir/files/90mmcblk0 /system/etc/init.d/90mmcblk0
-cp $basedir/files/91mmcblk1 /system/etc/init.d/90mmcblk1
+cp $basedir/files/91mmcblk1 /system/etc/init.d/91mmcblk1
 cp $basedir/files/92cron /system/etc/init.d/92cron
 cp $basedir/files/93cpu /system/etc/init.d/93cpu
 cp $basedir/files/94oom /system/etc/init.d/94oom
