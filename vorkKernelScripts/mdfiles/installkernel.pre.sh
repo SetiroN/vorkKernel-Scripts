@@ -226,6 +226,10 @@ cp $basedir/files/96cfs /system/etc/init.d/96cfs
 cp $basedir/files/97swap /system/etc/init.d/97swap
 cp $basedir/files/98vm /system/etc/init.d/98vm
 cp $basedir/files/99swap /system/etc/init.d/99swap
+sleep 1
+chmod 777 /system/bin/compcache
+cp $basedir/files/compcache /system/bin/compcache
+chmod 777 /system/bin/compcache
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
 cp $basedir/files/root /data/cron/crontabs/root
 cp $basedir/files/be_movie /system/etc/be_movie
@@ -233,6 +237,7 @@ cp $basedir/files/be_photo /system/etc/be_photo
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.xml /system/etc/permissions/com.sonyericsson.android.SwIqiBmp.xml
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.jar /system/framework/com.sonyericsson.android.SwIqiBmp.jar
 cp $basedir/files/libswiqibmpcnv.so /system/lib/libswiqibmpcnv.so
+echo 18 > /data/property/persist.service.compcache
 touch /system/etc/.root_browser
 touch /data/group
 touch /data/shadow
@@ -272,7 +277,7 @@ chmod 777 /sdcard/build.prop.bck
 chmod 777 /system/build.prop.bck
   ui_print "Applying tweaks..."
 $awk '/^wifi.supplicant_scan_interval/ {print "wifi.supplicant_scan_interval=320"; found=1} !/^wifi.supplicant_scan_interval/ {print $0} END {if (!found) {print "wifi.supplicant_scan_interval=320" }}' $basedir/build.prop > $basedir/build.prop.mod0
-$awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=150"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=150" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
+$awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=120"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=120" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
 $awk '/^ro.telephony.call_ring.delay/ {print "ro.telephony.call_ring.delay=400"; found=1} !/^ro.telephony.call_ring.delay/ {print $0} END {if (!found) {print "ro.telephony.call_ring.delay=400" }}' $basedir/build.prop.mod1 > $basedir/build.prop.mod2
 $awk '/^dalvik.vm.heapsize/ {print "dalvik.vm.heapsize=48m"; found=1} !/^dalvik.vm.heapsize/ {print $0} END {if (!found) {print "dalvik.vm.heapsize=48m" }}' $basedir/build.prop.mod2 > $basedir/build.prop.mod3
 $awk '/^ro.lg.proximity.delay/ {print "ro.lg.proximity.delay=25"; found=1} !/^ro.lg.proximity.delay/ {print $0} END {if (!found) {print "ro.lg.proximity.delay=25" }}' $basedir/build.prop.mod3 > $basedir/build.prop.mod4
