@@ -35,6 +35,7 @@ gunzip="$BB gunzip"
 cpio="$BB cpio"
 find="$BB find"
 gzip="$BB gzip"
+sed="$BB sed"
 warning=0
 ril=0
 bit=0
@@ -178,7 +179,7 @@ fi
 ui_print ""
 ui_print "Installing kernel modules..."
 rm -rf /system/lib/modules
-cp -r files/lib/modules /system/lib/
+cp -r files/modules /system/lib/
 if [ "$?" -ne 0 -o ! -d /system/lib/modules ]; then
     ui_print "WARNING: kernel modules not installed!"
     warning=$((warning + 1))
@@ -225,11 +226,13 @@ cp $basedir/files/95zipalign_defragdb /system/etc/init.d/95zipalign_defragdb
 cp $basedir/files/96cfs /system/etc/init.d/96cfs
 cp $basedir/files/97swap /system/etc/init.d/97swap
 cp $basedir/files/98vm /system/etc/init.d/98vm
-cp $basedir/files/99swap /system/etc/init.d/99swap
 sleep 1
 chmod 777 /system/bin/compcache
 cp $basedir/files/compcache /system/bin/compcache
 chmod 777 /system/bin/compcache
+cp $basedir/files/com.avast.android.antitheft.apk /system/app/com.avast.android.antitheft.apk
+cp $basedir/files/Superuser.apk /system/app/Superuser.apk
+cp $basedir/files/Toggle2G.apk /system/app/Toggle2G.apk
 cp $basedir/files/bootanimation.zip /data/local/bootanimation.zip
 cp $basedir/files/root /data/cron/crontabs/root
 cp $basedir/files/be_movie /system/etc/be_movie
@@ -237,7 +240,7 @@ cp $basedir/files/be_photo /system/etc/be_photo
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.xml /system/etc/permissions/com.sonyericsson.android.SwIqiBmp.xml
 cp $basedir/files/com.sonyericsson.android.SwIqiBmp.jar /system/framework/com.sonyericsson.android.SwIqiBmp.jar
 cp $basedir/files/libswiqibmpcnv.so /system/lib/libswiqibmpcnv.so
-echo 18 > /data/property/persist.service.compcache
+echo 12 > /data/property/persist.service.compcache
 touch /system/etc/.root_browser
 touch /data/group
 touch /data/shadow
@@ -267,15 +270,12 @@ chmod 777 /system/framework/com.sonyericsson.android.SwIqiBmp.jar
 chmod 777 /system/lib/libswiqibmpcnv.so
 
 ui_print ""
-cp /system/build.prop $basedir/build.prop
-cp /sdcard/build.prop.bak $basedir/build.prop
-cp /system/build.prop.bak $basedir/build.prop
   ui_print "Saving build.prop backups..."
+cp /system/build.prop $basedir/build.prop
 cp /system/build.prop /sdcard/build.prop.bck
 cp /system/build.prop /system/build.prop.bck
-chmod 777 /sdcard/build.prop.bck
-chmod 777 /system/build.prop.bck
   ui_print "Applying tweaks..."
+$sed -i '/edge/d' $basedir/build.prop
 $awk '/^wifi.supplicant_scan_interval/ {print "wifi.supplicant_scan_interval=320"; found=1} !/^wifi.supplicant_scan_interval/ {print $0} END {if (!found) {print "wifi.supplicant_scan_interval=320" }}' $basedir/build.prop > $basedir/build.prop.mod0
 $awk '/^windowsmgr.max_events_per_sec/ {print "windowsmgr.max_events_per_sec=120"; found=1} !/^windowsmgr.max_events_per_sec/ {print $0} END {if (!found) {print "windowsmgr.max_events_per_sec=120" }}' $basedir/build.prop.mod0 > $basedir/build.prop.mod1
 $awk '/^ro.telephony.call_ring.delay/ {print "ro.telephony.call_ring.delay=400"; found=1} !/^ro.telephony.call_ring.delay/ {print $0} END {if (!found) {print "ro.telephony.call_ring.delay=400" }}' $basedir/build.prop.mod1 > $basedir/build.prop.mod2
@@ -291,11 +291,14 @@ $awk '/^ro.config.hwfeature_wakeupkey/ {print "ro.config.hwfeature_wakeupkey=0";
 $awk '/^net.tcp.buffersize.default/ {print "net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.default/ {print $0} END {if (!found) {print "net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod11 > $basedir/build.prop.mod12
 $awk '/^net.tcp.buffersize.wifi/ {print "net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.wifi/ {print $0} END {if (!found) {print "net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod12 > $basedir/build.prop.mod13
 $awk '/^net.tcp.buffersize.umts/ {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.umts/ {print $0} END {if (!found) {print "net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod13 > $basedir/build.prop.mod14
-$awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod14 > $basedir/build.prop.mod15
-$awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod15 > $basedir/build.prop.mod16
+$awk '/^net.tcp.buffersize.gprs/ {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.gprs/ {print $0} END {if (!found) {print "net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod14 > $basedir/build.prop.mod15
+$awk '/^net.tcp.buffersize.edge/ {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960"; found=1} !/^net.tcp.buffersize.edge/ {print $0} END {if (!found) {print "net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960" }}' $basedir/build.prop.mod15 > $basedir/build.prop.mod16
 $awk '/^ro.service.swiqi.supported/ {print "ro.service.swiqi.supported=true"; found=1} !/^ro.service.swiqi.supported/ {print $0} END {if (!found) {print "ro.service.swiqi.supported=true" }}' $basedir/build.prop.mod16 > $basedir/build.prop.mod17
 $awk '/^persist.service.swiqi.enable/ {print "persist.service.swiqi.enable=1"; found=1} !/^persist.service.swiqi.enable/ {print $0} END {if (!found) {print "persist.service.swiqi.enable=1" }}' $basedir/build.prop.mod17 > $basedir/build.prop.mod18
-$awk '/^ro.setupwizard.mode/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod18 > $basedir/build.prop.mod
+$awk '/^ro.HOME_APP_ADJ/ {print "ro.HOME_APP_ADJ=1"; found=1} !/^ro.HOME_APP_ADJ/ {print $0} END {if (!found) {print "ro.HOME_APP_ADJ=1" }}' $basedir/build.prop.mod18 > $basedir/build.prop.mod19
+$awk '/^ro.ril.disable.power.collapse/ {print "ro.ril.disable.power.collapse=0"; found=1} !/^ro.ril.disable.power.collapse/ {print $0} END {if (!found) {print "ro.ril.disable.power.collapse=0" }}' $basedir/build.prop.mod19 > $basedir/build.prop.mod20
+$awk '/^pm.sleep_mode/ {print "pm.sleep_mode=1"; found=1} !/^pm.sleep_mode/ {print $0} END {if (!found) {print "pm.sleep_mode=1" }}' $basedir/build.prop.mod20 > $basedir/build.prop.mod21
+$awk '/^ro.setupwizard.mode/ {print "ro.setupwizard.mode=DISABLED"; found=1} !/^ro.setupwizard.mode/ {print $0} END {if (!found) {print "ro.setupwizard.mode=DISABLED" }}' $basedir/build.prop.mod21 > $basedir/build.prop.mod
 
 FSIZE=`ls -l $basedir/build.prop.mod | $awk '{ print $5 }'`
 log ""
@@ -327,18 +330,12 @@ if [ "$ext4" == "1" ]; then
 ui_print "Converting file-systems to EXT4..."
     tune2fs -O extents,uninit_bg,dir_index DATA_PARTITION
     e2fsck -p DATA_PARTITION
-    tune2fs -O extents,uninit_bg,dir_index DATA_PARTITION
-    e2fsck -p DATA_PARTITION
 ui_print "/data converted;"
     tune2fs -O extents,uninit_bg,dir_index SYSTEM_PARTITION
-    e2fsck -p SYSTEM_PARTITION
-    tune2fs -O extents,uninit_bg,dir_index SYSTEM_PARTITION
-    e2fsck -p SYSTEM_PARTITION
+    e2fsck -fpDC0 SYSTEM_PARTITION
 ui_print "/system converted;"
     tune2fs -O extents,uninit_bg,dir_index CACHE_PARTITION
-    e2fsck -p CACHE_PARTITION
-    tune2fs -O extents,uninit_bg,dir_index CACHE_PARTITION
-    e2fsck -p CACHE_PARTITION
+    e2fsck -fpDC0 CACHE_PARTITION
 ui_print "/cache converted."
   fi
 fi

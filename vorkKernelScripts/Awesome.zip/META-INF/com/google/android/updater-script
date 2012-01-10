@@ -8,4 +8,3 @@ set_perm(0, 0, 0700, "/tmp/ironkrnL//busybox");
 set_perm(0, 0, 0700, "/tmp/ironkrnL//unpackbootimg");
 set_perm(0, 0, 0700, "/tmp/ironkrnL//installkernel.sh");
 run_program("/tmp/ironkrnL//installkernel.sh");
-unmount("/system");

@@ -139,14 +139,14 @@ echo "Grabbing zImage..."
 cp $source_dir/lge-kernel-star/arch/arm/boot/zImage $script_dir/Awesome.zip/tmp/ironkrnL/zImage
 
 echo "Grabbing kernel modules..."
-if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/ ]; then
-    mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/ ]; then
+    mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
 fi
-rm $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/*
+rm $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/*
 
 for module in `find $source_dir/lge-kernel-star -name *.ko`
 do
-    cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+    cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
 done
 
 echo "Making update zip..."
@@ -178,14 +178,14 @@ if [ "$ramhack80" == "1" ]; then
 	cp $source_dir/lge-kernel-star/arch/arm/boot/zImage $script_dir/Awesome.zip/tmp/ironkrnL/zImage
 
 	echo "Grabbing kernel modules..."
-    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/ ]; then
-        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/ ]; then
+        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
     fi
-    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/*
+    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/*
 
 	for module in `find $source_dir/lge-kernel-star -name *.ko`
 	do
-		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
 	done
 	
 	echo "Making update zip..."
@@ -219,14 +219,14 @@ if [ "$ramhack96" == "1" ]; then
 	cp $source_dir/lge-kernel-star/arch/arm/boot/zImage $script_dir/Awesome.zip/tmp/ironkrnL/zImage
 
 	echo "Grabbing kernel modules..."
-    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/ ]; then
-        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/ ]; then
+        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
     fi
-    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/*
+    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/*
 
 	for module in `find $source_dir/lge-kernel-star -name *.ko`
 	do
-		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
 	done
 	
 	echo "Making update zip..."
@@ -260,14 +260,14 @@ if [ "$ramhack32" == "1" ]; then
 	cp $source_dir/lge-kernel-star/arch/arm/boot/zImage $script_dir/Awesome.zip/tmp/ironkrnL/zImage
 
 	echo "Grabbing kernel modules..."
-    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/ ]; then
-        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/ ]; then
+        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
     fi
-    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/*
+    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/*
 
 	for module in `find $source_dir/lge-kernel-star -name *.ko`
 	do
-		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
 	done
 	
 	echo "Making update zip..."
@@ -301,14 +301,14 @@ if [ "$ramhack0" == "1" ]; then
 	cp $source_dir/lge-kernel-star/arch/arm/boot/zImage $script_dir/Awesome.zip/tmp/ironkrnL/zImage
 
 	echo "Grabbing kernel modules..."
-    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/ ]; then
-        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+    if [ ! -d $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/ ]; then
+        mkdir -p $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
     fi
-    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/*
+    rm $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/*
 
 	for module in `find $source_dir/lge-kernel-star -name *.ko`
 	do
-		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/lib/modules/
+		cp $module $script_dir/Awesome.zip/tmp/ironkrnL/files/modules/
 	done
 	
 	echo "Making update zip..."
