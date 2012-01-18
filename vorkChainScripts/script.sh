@@ -1,10 +1,10 @@
 #!/bin/bash
 
-gcclink=4.6-2011.09
-gcclv=4.6-2011.09-1
+gcclink=4.6-2012.01
+gcclv=4.6-2012.01
 gcc=4.6
-binv=2.21.1
-binvrev=a
+binv=2.22
+binvrev=
 mpcv=0.9
 newlibv=1.19.0
 vorkChain_revision=vorkChain_r5-LinaroBase
