@@ -1,1 +1,1 @@
-echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj; echo "2560,4096,6144,23040,25600,28160" > /sys/module/lowmemorykiller/parameters/minfree
+echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj; echo "1536,3072,4096,23040,25600,28160" > /sys/module/lowmemorykiller/parameters/minfree
