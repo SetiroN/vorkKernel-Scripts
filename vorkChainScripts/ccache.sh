@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export buildprefix=$HOME/vorkChain
-ccachev=3.1.6
+ccachev=3.1.7
 
 if [ ! -d $buildprefix/source/ccache-$ccachev ]; then
 	echo Downloading ccache...
