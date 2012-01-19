@@ -1,121 +1,62 @@
 #!/bin/bash
 
-gcclink=4.6-2012.01
-gcclv=4.6-2012.01
+target=arm-linux-androideabi
 gcc=4.6
-binv=2.22
-binvrev=
+gcclv=$gcc-2012.01
+binv=2.21.1
 mpcv=0.9
-newlibv=1.19.0
-vorkChain_revision=vorkChain_r5-LinaroBase
+newlibv=1.20.0
+cloogv=0.16.3
+gdblv=7.3-2011.10
+gmpv=5.0.2
+mpfrv=3.0.1
 
-echo "You can build for following platforms: "
-echo "1. Tegra"
-echo "2. Qualcomm msm qsd6850"
-echo "Enter you choice"
+export buildprefix=$HOME/linaro-toolchain
+export prefix=$HOME/linaro-toolchain/built
 
-read platform
-
-function die() {
-    echo $@
-    exit 1
-}
-
-if [ "$platform" == "2" ]; then 
-	export buildprefix=$HOME/vorkChain/msmqsd
-	export prefix=$HOME/vorkChain/msmqsd/toolchain
-	optimization="--with-arch=armv7-a --with-tune=cortex-a8 --with-fpu=neon --with-float=softfp"
-	if [ ! -d $buildprefix ]; then mkdir -p $buildprefix; fi
-	cd $buildprefix
-else
-	export buildprefix=$HOME/vorkChain
-	export prefix=$HOME/vorkChain/toolchain
-	optimization="--with-arch=armv7-a --with-tune=cortex-a9 --with-fpu=vfpv3-d16 --with-float=softfp"
-	if [ ! -d $buildprefix ]; then mkdir -p $buildprefix; fi
-	cd $buildprefix
+if [ ! -d ~/bin ]; then
+	echo Installing repo...
+	mkdir ~/bin
+	PATH=~/bin:$PATH
+	curl https://dl-ssl.google.com/dl/googlesource/git-repo/repo > ~/bin/repo
+	chmod a+x ~/bin/repo
 fi
+if [ ! -d $buildprefix ]; then
+	echo Initializing linaro repository...
+	mkdir -p $buildprefix
+	repo init -b linaro-master -u git://android.git.linaro.org/toolchain/manifest.git
+fi
+cd $buildprefix
+echo Syncronizing linaro repository...
+repo sync
 
 if [ -d $prefix/bin ]; then
    read -p "Toolchain already compiled. Do you want to recompile? (y/n) " CHOICE
    if [ ! $CHOICE == "y" ]; then exit 0; fi
 fi
 
-if [ ! -d source ]; then mkdir source; fi
-if [ ! -d temp/binutils ]; then mkdir -p temp/binutils; fi
-if [ ! -d temp/gcc ]; then mkdir -p temp/gcc; fi
-if [ ! -d temp/newlib ]; then mkdir -p temp/newlib; fi
-
-if [ ! -d $buildprefix/source/gcc-linaro-$gcclv ]; then
-    echo Downloading gcc-linaro and mpc...
-    cd $buildprefix/source/
+if [ ! -d $buildprefix/gcc/gcc-linaro-$gcclv ]; then
+    echo Downloading gcc-linaro...
+    cd $buildprefix/gcc/
     rm gcc-linaro-*.tar.bz2 &>/dev/null
-    rm mpc-*.tar.gz&>/dev/null
-    wget http://launchpad.net/gcc-linaro/$gcc/$gcclink/+download/gcc-linaro-$gcclv.tar.bz2 || die "Unable to download GCC!"
-    wget http://www.multiprecision.org/mpc/download/mpc-$mpcv.tar.gz || die "Unable to download MPC!"
+    wget http://launchpad.net/gcc-linaro/$gcc/$gcclv/+download/gcc-linaro-$gcclv.tar.bz2 || die "Unable to download GCC!"
 
-    echo Extracting gcc-linaro and mpc...
+    echo Extracting gcc-linaro...
     tar -xvjf gcc-linaro-$gcclv.tar.bz2
-    tar -xvzf mpc-$mpcv.tar.gz
-    
-    echo Moving mpc to gcc folder
-    mv mpc-$mpcv mpc
-    cd gcc-linaro-$gcclv
-    mv ../mpc mpc
 fi
 
-if [ ! -d $buildprefix/source/binutils-$binv ]; then
-    echo Downloading binutils...
-    cd $buildprefix/source/
-    rm binutils-*.tar.gz &>/dev/null
-    wget http://ftp.gnu.org/gnu/binutils/binutils-$binv$binvrev.tar.bz2 || die "Unable to download Binutils!"
-    
-    echo "Extracting binutils..."
-    tar -jxvf binutils-$binv$binvrev.tar.bz2
-fi
-    
-if [ ! -d $buildprefix/source/newlib-$newlibv ]; then
-    echo Downloading newlib...
-    cd $buildprefix/source/
-    rm newlib-*.tar.gz &>/dev/null
-    wget http://dl.dropbox.com/u/30546529/newlib-$newlibv.tar.gz || die "Unable to download Newlib!"
-    
-    echo Extracting newlib...
-    tar -xvzf newlib-$newlibv.tar.gz
-fi
-
-cd $buildprefix/temp/binutils
-echo Configuring binutils...
-$buildprefix/source/binutils-$binv/configure --target=arm-eabi --prefix=$prefix --disable-nls --disable-shared --disable-threads --with-gcc --with-gnu-as --with-gnu-ld --enable-interwork --enable-multilib
-echo Building binutils...
-make -j`grep "processor" /proc/cpuinfo | wc -l`
-echo Installing binutils...
-make install -j`grep "processor" /proc/cpuinfo | wc -l`
-
-cd $buildprefix/temp/gcc
+cd $buildprefix/build
 echo Configuring gcc...
-$buildprefix/source/gcc-linaro-$gcclv/configure --target=arm-eabi --with-mode=thumb $optimizations --prefix=$prefix --with-pkgversion=$vorkChain_revision --with-gcc --with-gnu-ld --with-gnu-as --disable-nls --disable-shared --disable-threads --enable-languages=c,c++ --with-newlib --with-headers=$buildprefix/source/newlib-$newlibv/newlib/libc/include
-echo Building bootstrap gcc...
-make all-gcc -j`grep "processor" /proc/cpuinfo | wc -l`
-echo Installing bootstrap gcc...
-make install-gcc -j`grep "processor" /proc/cpuinfo | wc -l`
+bash $buildprefix/build/gcc-linaro-$gcclv/configure --target=$target --with-binutils-version=$binv --with-newlib-version=$newlibv --with-mpc-version=$mpcv --with-gcc-version=linaro-$gcclv --with-cloog-version=$cloogv --with-gdb-version=linaro-$gdblv --with-gmp-version=$gmpv --with-mpfr-version=$mpfrv --with-pkgversion=linar_roN-$gcclv
 
 PATH=$prefix/bin:$PATH
 export PATH
 
-cd $buildprefix/temp/newlib
-echo Configuring newlib...
-$buildprefix/source/newlib-$newlibv/configure --target=arm-eabi --prefix=$prefix --enable-interwork --enable-multilib
-echo Building newlib...
-make -j`grep "processor" /proc/cpuinfo | wc -l`
-echo Installing newlib...
-make install -j`grep "processor" /proc/cpuinfo | wc -l`
-
-cd $buildprefix/temp/gcc
+cd $buildprefix/build
 echo Building gcc...
-make -j`grep "processor" /proc/cpuinfo | wc -l`
-echo Installing gcc...
-make install -j`grep "processor" /proc/cpuinfo | wc -l`
+bash $buildprefix/build/gcc-linaro-$gcclv/linaro-build.sh --with-gcc=gcc-linaro-$gcclv --apply-gcc-patch=yes
+echo Complete?!
 
-strip $prefix/bin/*
-strip $prefix/arm-eabi/bin/*
-strip $prefix/libexec/gcc/arm-eabi/*/*
+read -p "Execute ccache install script? (y/n) " CHOICE
+if [ ! $CHOICE == "y" ]; then exit 0; fi
+bash $buildprefix/

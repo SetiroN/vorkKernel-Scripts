@@ -12,7 +12,7 @@ build_device="LGP990"
 function die () { echo $@; exit 1; }
 
 # Device specific functions
-function LGP990() { toolchain="$HOME/android-toolchain-eabi/bin/arm-linux-androideabi-"; ramhack112=1; ramhack104=1; ramhack96=1; ramhack80=0; ramhack48=0; ramhack32=1; ramhack0=0; }
+function LGP990() { toolchain="$HOME/linaro-toolchain/built/bin/arm-linux-androideabi-"; ramhack112=1; ramhack104=1; ramhack96=1; ramhack80=0; ramhack48=0; ramhack32=1; ramhack0=0; }
 function LGP990_zip() {
 	case $1 in
 		"do")   
@@ -160,13 +160,13 @@ if [ ! -d $source_dir/lge-kernel-star ]; then
 fi
 
 echo "Setting up kernel..."
-make -C $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" setiron_defconfig
+make -BC $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" setiron_defconfig
 if [ "$?" != "0" ]; then
 	die "Error setting up kernel"
 fi
 
 echo "Building kernel..."
-make -C $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" -j$cores
+make -BC $source_dir/lge-kernel-star ARCH=arm CROSS_COMPILE="$toolchain" -j$cores
 if [ "$?" != "0" ]; then
 	die "Error building kernel"
 fi
